@@ -1,0 +1,49 @@
+[user]
+	name = Michael Ziwisky
+	email = mziwisky@instructure.com
+
+[alias]
+	st = "status"
+	co = "checkout"
+	br = "branch"
+	newtask = "checkout --track origin/master -b"
+	graph = "log --color --graph --decorate --oneline --branches --remotes --tags"
+	graphme = "log --color --graph --decorate --oneline"
+  up = "branch -u origin/master"
+	gerrit-submit = "!bash -c ' \
+		    local_ref=$(git symbolic-ref HEAD); \
+		    local_name=${local_ref##refs/heads/}; \
+		    remote=$(git config branch.\"$local_name\".remote || echo origin); \
+		    remote_ref=$(git config branch.\"$local_name\".merge); \
+		    remote_name=${remote_ref##refs/heads/}; \
+		    remote_review_ref=\"refs/for/$remote_name\"; \
+		    r=\"\"; \
+		    if [[ $0 != \"\" && $0 != \"bash\" ]]; then r=\"--reviewer=$0\"; fi; \
+		    if [[ $1 != \"\" ]]; then r=\"$r --reviewer=$1\"; fi; \
+		    if [[ $2 != \"\" ]]; then r=\"$r --reviewer=$2\"; fi; \
+		    if [[ $3 != \"\" ]]; then r=\"$r --reviewer=$3\"; fi; \
+		    if [[ $4 != \"\" ]]; then r=\"$r --reviewer=$4\"; fi; \
+		    git push --receive-pack=\"gerrit receive-pack $r\" $remote HEAD:$remote_review_ref'"
+
+[grep]
+  extendedRegexp = true
+[gc]
+	auto=1
+[color]
+	ui = true
+[core]
+	excludesfile = /Users/mziwisky/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[diff]
+  tool = opendiff
+[difftool]
+  prompt = false
+[difftool "opendiff"]
+  cmd = /usr/bin/opendiff \"$LOCAL\" \"$REMOTE\" -merge \"$MERGED\" | cat
+[push]
+	default = simple
