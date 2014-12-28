@@ -1,0 +1,347 @@
+" MY NOTES/TIPS/CHEATS
+"
+"   gp - paste and leave cursor at end
+"   v_o - jump between beginning and end of selection
+"   I - insert at beginning of current line (after whitespace)
+"   g; - go to [count] older position in change list
+"   g, - go to [count] newer position in change list
+"   gi - enter insertion mode with cursor in the same spot it was when you
+"        previously left insertion mode
+"   :only - close all other splits
+"
+" MARKS (move to with single quote: '{mark})
+"
+"   ' - position before latest jump (eg, gg=G'' formats entire file
+"       and returns cursor to where it started)
+"   [ / ] - beginning / end of last YANK or PASTE
+"   < / > - beginning / end of last VISUAL SELECTION
+
+
+"NeoBundle Scripts-----------------------------
+"
+if has('vim_starting')
+  set nocompatible               " Be iMproved
+
+  " Required:
+  set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+" Required:
+call neobundle#begin(expand('~/.vim/bundle'))
+
+" Let NeoBundle manage NeoBundle
+" Required:
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+" Add or remove your Bundles here:
+"NeoBundle 'Shougo/neosnippet.vim'
+"NeoBundle 'Shougo/neosnippet-snippets'
+"NeoBundle 'tpope/vim-fugitive'
+"NeoBundle 'flazz/vim-colorschemes'
+
+NeoBundle 'kien/ctrlp.vim'
+NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'tomtom/tcomment_vim' " (un)commenting with gc{motion} (but mapped to <Leader>c{motion} instead)
+NeoBundle 'ntpeters/vim-better-whitespace' " trailing whitespace highlighting, :StripWhitespace to clean file
+NeoBundle 'terryma/vim-expand-region' " v/<C-v> to expand/contract selection
+NeoBundle 'rking/ag.vim' " better grepping! use :Ag
+NeoBundle 'bling/vim-airline' " cool status line
+NeoBundle 'scrooloose/syntastic' " syntax checking
+NeoBundle 'tpope/vim-eunuch' " provides :SudoW[rite] (and some other stuff)
+
+" Languages
+NeoBundle 'vim-ruby/vim-ruby'
+NeoBundle 'kana/vim-textobj-user' " dependency of vim-textobj-rubyblock
+NeoBundle 'nelstrom/vim-textobj-rubyblock'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'nono/vim-handlebars'
+NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'mxw/vim-jsx'
+
+NeoBundle 'tpope/vim-vividchalk'
+NeoBundle 'chriskempson/base16-vim'
+
+" Required:
+call neobundle#end()
+
+" Required: (this loads indent files, to automatically do
+" language-dependent indenting)
+filetype plugin indent on
+
+" If there are uninstalled bundles found on startup,
+" this will conveniently prompt you to install them.
+NeoBundleCheck
+"End NeoBundle Scripts-------------------------
+
+
+" Space Leader!
+let mapleader = "\<Space>"
+let maplocalleader = "\<Space>"
+
+
+" ## Display
+
+" don't break words in middle
+set linebreak
+" show incomplete paragraphs even when they don't fit on screen (avoid @'s)
+set display+=lastline
+" always show ruler
+set ruler
+" turn on syntax hilighting
+syntax on
+" show line numbers
+set number
+" allow buffers to be open in the background
+set hidden
+" keep 5 lines of context on the screen while scrolling, instead of scrolling when cursor is at very bottom
+set scrolloff=5
+" ...except for in the quickfix window (this is a hassle :/ )
+" get rid of scrolloff option for certain buffers like the quickfix and preview windows
+autocmd BufEnter *
+      \ if (&ft=='qf' || &previewwindow || bufname('%') ==# "__Tag_List__") && !exists('s:scrolloff_sav') |
+      \   let s:scrolloff_sav=&scrolloff |
+      \   set scrolloff=0 |
+      \ endif
+" File type will not be set on the first BufEnter
+autocmd Filetype qf
+      \ if !exists('s:scrolloff_sav') |
+      \   let s:scrolloff_sav=&scrolloff |
+      \   set scrolloff=0 |
+      \ endif
+autocmd BufLeave *
+      \ if (&ft=='qf' || &previewwindow || bufname('%') ==# "__Tag_List__") && exists('s:scrolloff_sav') |
+      \   let &scrolloff=s:scrolloff_sav |
+      \   unlet s:scrolloff_sav |
+      \ endif
+" always show status line (so we see our sweet vim-airline even with only a single split open)
+set laststatus=2
+" show filename in terminal titlebar
+set title
+set titlestring=vim\ -\ %f
+" Hide scrollbars in gui vims
+set guioptions-=L
+set guioptions-=R
+set guioptions-=l
+set guioptions-=r
+
+
+" ## Theme
+
+set background=dark
+
+if !has("gui_running")
+  colorscheme vividchalk
+  let g:airline_theme='kalisi'
+  " search higlighting is too subtle -- jazz it up
+  hi Search cterm=NONE ctermfg=black ctermbg=yellow
+else
+  colorscheme base16-atelierforest
+  let g:airline_theme='base16'
+  hi Search guifg=black guibg=yellow
+endif
+
+
+
+" ## Indentation and Tabs
+
+" two spaces pleases
+set ts=2
+set shiftwidth=2
+" and no tab characters!
+set expandtab
+" round to nearest 2, don't just move 2
+set shiftround
+
+" `smartindent` is an obsolete option for C-like syntax. It has been replaced with `cindent`,
+" and setting `cindent` also overrides `smartindent`. Vim has indentation
+" support for many languages out-of-the-box, and setting `smartindent`
+" (or `cindent`, for that matter) in your .vimrc might interfere with this. Use `filetype indent on` and be happy.
+set noautoindent
+set nosmartindent
+filetype plugin indent on
+
+
+" ## Code Folding
+
+" turn off folding by default
+set nofoldenable
+" fold by indentation level
+set foldmethod=indent
+" start out with folds for all but really deep nesting expanded
+set foldlevel=9
+
+
+" ## Spell Checking
+
+" turn it on by default for certain files
+" files with extension .es.txt automatically spellchecked in Spanish
+au BufNewFile,BufRead *.en.txt set spell
+au BufNewFile,BufRead *.es.txt set spelllang=es_es
+
+
+" ## Backup / Swap file storage
+
+" pull everything together in one place; don't write swap files in cwd
+" the trailing `//` causes swap file names to be built from their full path
+set backupdir=~/.vim/.swapfiles//
+set directory=~/.vim/.swapfiles//
+
+
+" ## Nitpicks
+
+" eliminate delay after <Esc> from Visual mode (i don't _think_ there are any side effects...?)
+set ttimeoutlen=0
+
+
+" ## Keybindings
+
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+
+" make up, down, j, k keys work intuitively for long paragraphs
+nmap <up> gk
+nmap <down> gj
+nmap j gj
+nmap k gk
+vmap <up> gk
+vmap <down> gj
+vmap j gj
+vmap k gk
+
+" not in insert mode -- <C-o> can't keep up with my fast key repeat :(
+" imap <up> <C-o>gk
+" imap <down> <C-o>gj
+
+" CTRL-U in insert mode deletes the current line (does not scroll up a page,
+" as it does in normal mode). `CTRL-G u` first will break undo sequence and
+" make that line deletion a separate change that can be undone on its own.
+inoremap <C-U> <C-G>u<C-U>
+
+" complete in command mode with tab
+cnoremap <Tab> <C-L><C-D>
+
+" Use r in visual mode to replace selection with a paste.
+" vmap r "_dP
+
+nnoremap <Leader>n :NERDTreeToggle<CR> :NERDTreeMirror<CR>
+
+" [b and ]b for prev/next buffer
+nnoremap <silent> [b :bp<CR>
+nnoremap <silent> ]b :bn<CR>
+
+" after indenting in visual mode, retain selection
+vnoremap > >gv
+vnoremap < <gv
+
+" vim-expand-region maps to v/<C-v>
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+
+" ## Searching
+
+" Highligh found search results, can be turned off with `:noh`
+set hlsearch
+
+" This will have searches ignore case unless I use a capital letter
+set ignorecase
+set smartcase
+
+" Start searching right away instead of waiting for `<CR>`
+set incsearch
+
+" fix backspace in insert mode
+set backspace=indent,eol,start
+
+"map <silent> <LocalLeader>nh :nohls<CR>
+"map <silent> <LocalLeader>rt :!ctags -R --exclude=".git\|.svn\|log\|tmp\|db\|pkg" --extra=+f<CR>
+
+
+" EASIER SPLIT NAVIGATIONS
+" We can use different key mappings for easy navigation between splits to save
+" a keystroke. So instead of ctrl-w then j, it’s just ctrl-j:
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" MORE NATURAL SPLIT OPENING
+" Open new split panes to right and bottom, which feels more natural than
+" Vim’s default:
+set splitbelow
+set splitright
+
+" CtrlP mappings
+nnoremap <Leader>o :CtrlP<CR>
+nnoremap <Leader>b :CtrlPBuffer<CR>
+nnoremap <Leader>m :CtrlPMRUFiles<CR>
+nnoremap <Leader>O :CtrlPMixed<CR>
+
+nnoremap <Leader>B :!tig blame % +<C-r>=line('.')<CR><CR>
+
+" Copy & paste to system clipboard with <Space>p and <Space>y
+vnoremap <Leader>y "+y
+vnoremap <Leader>d "+d
+nnoremap <Leader>p "+p
+nnoremap <Leader>P "+P
+vnoremap <Leader>p "+p
+vnoremap <Leader>P "+P
+
+
+" enter reruns last test...
+"nmap <CR> :wa<CR> :VimuxRunLastCommand<CR>
+
+" ...but does normal thing in quickfix window
+"autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+
+" grep for word/WORD under cursor with leader-g/G
+" nnoremap <Leader>g :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" nnoremap <Leader>G :grep! "\b<C-R><C-A>\b"<CR>:cw<CR>
+nnoremap <Leader>g :Ag! "\b<cword>\b"<CR>
+nnoremap <Leader>G :Ag! "\b<cWORD>\b"<CR>
+
+
+" TODO: explore paulh's other plugins, and ddorman's too
+" TODO: add SudoW from janus, and also see if you like anything else from it
+
+
+" <F3> to switch between mouse modes
+fun! s:ToggleMouse()
+  if &mouse == ""
+    set mouse=a
+    set number
+    echo "Mouse is for Vim (" . &mouse . ")"
+  else
+    set mouse=""
+    set nonumber " we always go to terminal for copying, so save ourselves a step
+    echo "Mouse is for terminal"
+  endif
+endfunction
+map <F3> :call <SID>ToggleMouse()<CR>
+imap <F3> <C-O><F3>
+
+" also set it to vim mode by default
+set mouse=a
+
+" TODO: get used to using system clipboard copy/paste instead of mouse
+" stuff... also, maybe a mapping for paste-without-formatting, rather than
+" doing pastetoggle all the time
+
+" toggle paste, and always report its status
+map <F4> :set paste!<CR>:set paste?<CR>
+set pastetoggle=<F4>
+
+set history=500 " keep 500 lines of command line history
+
+" ddorman's custom :Ag -- paulh uses a package. might check it out...
+" command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+
+
+" trying out some shortcuts to see if i'll ever use them
+nmap <silent> \n :nohlsearch<CR>
+nmap <silent> \p :set paste!<CR>
+nmap <silent> \l :setlocal number!<CR>
+
+" next/previous buffer
+nmap <C-n> :bnext<CR>
+nmap <C-p> :bprev<CR>
+
