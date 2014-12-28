@@ -1,0 +1,130 @@
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+setopt appendhistory
+setopt hist_find_no_dups
+bindkey -v
+# End of lines configured by zsh-newuser-install
+
+# stupid oh-my-zsh wants to fuck with pushd...
+unsetopt pushdminus
+unsetopt pushdignoredups
+unsetopt autopushd
+
+# also, keep histories separate
+unsetopt sharehistory
+
+#bindkey "^[[A" history-search-backward
+#bindkey "^[[B" history-search-forward
+# something changed, and the above were no longer correct keycodes
+# for the up and down arrow. i think the following will work for
+# any terminal that implements terminfo.
+bindkey $terminfo[kcuu1] history-search-backward
+bindkey $terminfo[kcud1] history-search-forward
+
+# reverse intelligent search -- super handy!
+bindkey "^R" history-incremental-search-backward
+
+export EDITOR=vim
+export GREP_OPTIONS='--color=auto'
+
+alias ls='ls -G'
+alias l='ls -Fa'
+alias ll='ls -la'
+alias lll='ls -alotr' # sort by mod time, most recent last
+alias llll='ls -aloSrh' # sort by size, largest last
+alias cp='cp -v -i'
+alias rm='rm -i'
+alias mv='mv -v -i'
+alias vdiff=opendiff
+
+# "search no svn" - look for an expression in all files
+# under dir (current if unspecified), but skip .svn directories
+function sns()
+{
+	function doit() {
+		grep -r --exclude-dir=.svn --exclude-dir=.git "$2" $1
+	}
+
+	if [ $# = 1 ]; then
+		doit . $1
+	elif [ $# = 2 ]; then
+		doit $1 $2
+	else
+		echo 'usage: sns [dir] expression'
+	fi
+}
+
+function mkcd()
+{
+	mkdir -p $1 && cd $1
+}
+
+function rbenvsudo(){
+  executable=$1
+  shift 1
+  sudo $(rbenv which $executable) $* 
+}
+
+export PATH=~/scripts:$PATH
+
+# Host-specific configs
+case $(hostname -s) in
+	"shinestructure")
+		# for android `adb` tool
+		export PATH=~/dev/android-sdk-macosx/platform-tools:$PATH
+		# for android `ndk-build` and company
+		export PATH=~/dev/android-ndk-r9:$PATH
+		if which rbenv > /dev/null; then eval "$(rbenv init - zsh)"; fi
+		export PGHOST=localhost
+    export PGDATA=/usr/local/var/postgres
+    # NOTE: I don't think the below alias is needed -- if you want to start
+    # the postgres server, probably just use `pg_ctl start` instead
+    alias pgstart='postgres -D $PGDATA -r $PGDATA/server.log'
+    alias mongostart='mongod --config /usr/local/etc/mongod.conf &>/dev/null &'
+		alias retina='open ~/scripts/retina.app'
+		alias bx='bundle exec'
+    alias nx='PATH=$(npm bin):$PATH'
+		alias reds='redis-server /usr/local/etc/redis.conf'
+    alias awsmike='ln -sf ~/.awssecret.mike ~/.awssecret;
+      export AWS_ACCESS_KEY_ID=$(head -1 ~/.awssecret);
+      export AWS_SECRET_KEY_ID=$(tail -1 ~/.awssecret);
+      export S3_BUCKET=gallery-images;
+      echo "aws configured for personal account"'
+    alias awsinst='ln -sf ~/.awssecret.instructure-gallery ~/.awssecret;
+      export AWS_ACCESS_KEY_ID=$(head -1 ~/.awssecret);
+      export AWS_SECRET_KEY_ID=$(tail -1 ~/.awssecret);
+      export S3_BUCKET=instructure-gallery;
+      echo "aws configured for instructure account"'
+    alias pyserv='python -m SimpleHTTPServer'
+    alias asc='java -jar /Applications/Adobe\ Flash\ Builder\ 4.7/sdks/4.9.1AIR3.9/lib/asc.jar'
+    alias asc2='java -jar /Applications/Adobe\ Flash\ Builder\ 4.7/eclipse/plugins/com.adobe.flash.compiler_4.7.0.349722/AIRSDK.3.9/lib/compiler.jar'
+    alias canvacurl='curl -H "Authorization: Bearer MnIaYWIotCBXRFhoXTNnFJl46q2qpzr9KdUwgMuLb8hCmMDPCBSC0r9BGoph0CXp"'
+    alias underscor='underscore print --color'
+    alias galleryreset='pushd ~/repos/gallery && bx rake assets:clobber && rm -rf node_modules && rm -rf bower_components && npm install && bower install && popd'
+    alias getsmartdbreset='dropdb get_smart_test && createdb get_smart_test && RAILS_ENV=test bin/rails runner "ActiveRecord::Base.connection.execute(\"CREATE SCHEMA hstore; CREATE EXTENSION HSTORE SCHEMA hstore\")" && RAILS_ENV=test bx rake db:migrate'
+		;;
+	"shininess")
+		alias flasccmake='PATH=/Users/mziwisky/crossbridge/sdk/usr/bin:$PATH make FLASCC=/Users/mziwisky/crossbridge/sdk FLEX=/Applications/Adobe\ Flash\ Builder\ 4.7/sdks/4.9.1AIR3.7/'
+		# for homebrew-installed ruby
+		export PATH=/usr/local/opt/ruby/bin:$PATH
+		# for android `adb` tool
+		export PATH=~/dev/android-sdk-macosx/platform-tools:$PATH
+		# for android `ndk-build` and company
+		export PATH=~/dev/android-ndk-r9:$PATH
+		;;
+	*)
+		echo "WARNING: host $(hostname -s) not familiar to .zshrc"
+esac
+
+if [ -n "$ZSH_THEME" ]; then
+	# oh-my-zsh is probably being used
+else
+	# probably no oh-my-zsh, so set your PS1
+	PS1="%F{green}[%n@%m %F{red}%1~%F{green}]%(#.#.$)%f "
+	echo "You should probably get oh-my-zsh, n00b."
+fi
+
+# grr... canvas' `bx rake js:compile` needs to be able to open a zillion files at once
+ulimit -n 4096
