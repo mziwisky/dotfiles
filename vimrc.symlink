@@ -296,8 +296,9 @@ vnoremap <Leader>P "+P
 " grep for word/WORD under cursor with leader-g/G
 " nnoremap <Leader>g :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 " nnoremap <Leader>G :grep! "\b<C-R><C-A>\b"<CR>:cw<CR>
-nnoremap <Leader>g :Ag! "\b<cword>\b"<CR>
-nnoremap <Leader>G :Ag! "\b<cWORD>\b"<CR>
+nnoremap <Leader>g :Ag! -wQ "<cword>"<CR>
+nnoremap <Leader>G :Ag! -wQ "<cWORD>"<CR>
+vnoremap <Leader>g "gy:Ag! -Q "<C-R>g"<CR>
 
 
 " TODO: explore paulh's other plugins, and ddorman's too
