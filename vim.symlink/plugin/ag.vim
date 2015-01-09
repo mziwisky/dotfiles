@@ -1,7 +1,8 @@
 " don't open buffer for first search result
 cabbrev Ag Ag!
-let ignored_dirs='node_modules' "TODO: see ctrlp.vim note on ignored_dirs
-let g:agprg="ag --ignore ".ignored_dirs
+if exists("g:ignore_dirs")
+  let g:agprg="ag --ignore ".g:ignore_dirs
+endif
 " no column numbers
 let g:agformat="%f:%l:%m"
 " highlight matches

@@ -346,3 +346,7 @@ nmap <silent> \l :setlocal number!<CR>
 nmap <C-n> :bnext<CR>
 nmap <C-p> :bprev<CR>
 
+" This gets used by plugins like ctrlp, ag, and nerdtree
+" TODO: maybe i should be using wildignore for this stuff?
+let g:ignore_dirs='node_modules'
+
