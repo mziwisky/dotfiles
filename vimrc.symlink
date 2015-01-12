@@ -8,6 +8,8 @@
 "   gi - enter insertion mode with cursor in the same spot it was when you
 "        previously left insertion mode
 "   :only - close all other splits
+"   v_p - replace selection with contents of "" (and replace "" with selection)
+"   D - delete to end of line (synonym for d$)
 "
 " MARKS (move to with single quote: '{mark})
 "
@@ -236,6 +238,7 @@ vnoremap < <gv
 " vim-expand-region maps to v/<C-v>
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
+
 
 " ## Searching
 
