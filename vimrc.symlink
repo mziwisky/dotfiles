@@ -282,10 +282,12 @@ nnoremap <Leader>O :CtrlPMixed<CR>
 nnoremap <Leader>B :!tig blame % +<C-r>=line('.')<CR><CR>
 
 " Copy & paste to system clipboard with <Space>p and <Space>y
-vnoremap <Leader>y "+y
-vnoremap <Leader>d "+d
+nnoremap <Leader>y "+y
+nnoremap <Leader>d "+d
 nnoremap <Leader>p "+p
 nnoremap <Leader>P "+P
+vnoremap <Leader>y "+y
+vnoremap <Leader>d "+d
 vnoremap <Leader>p "+p
 vnoremap <Leader>P "+P
 
