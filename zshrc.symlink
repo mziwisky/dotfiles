@@ -27,7 +27,6 @@ bindkey $terminfo[kcud1] history-search-forward
 bindkey "^R" history-incremental-search-backward
 
 export EDITOR=vim
-export GREP_OPTIONS='--color=auto'
 
 alias ls='ls -G'
 alias l='ls -Fa'
@@ -38,6 +37,7 @@ alias cp='cp -v -i'
 alias rm='rm -i'
 alias mv='mv -v -i'
 alias vdiff=opendiff
+alias grep='grep --color=auto'
 
 # "search no svn" - look for an expression in all files
 # under dir (current if unspecified), but skip .svn directories
