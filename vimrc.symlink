@@ -1,17 +1,19 @@
 " MY NOTES/TIPS/CHEATS
 "
-"   gp - paste and leave cursor at end
-"   v_o - jump between beginning and end of selection
-"   I - insert at beginning of current line (after whitespace)
+"   % - move to matching paren/bracket/brace, i.e. ([{}])
 "   g; - go to [count] older position in change list
 "   g, - go to [count] newer position in change list
 "   gi - enter insertion mode with cursor in the same spot it was when you
 "        previously left insertion mode
+"   gp - paste and leave cursor at end
+"   v_o - jump between beginning and end of selection
 "   :only - close all other splits
 "   v_p - replace selection with contents of "" (and replace "" with selection)
 "   D - delete to end of line (synonym for d$)
+"   I - insert at beginning of current line (after whitespace)
 "
-" MARKS (move to with single quote: '{mark})
+" MARKS (move to with quote or backtick: '{mark} -- linewise
+"                                        `{mark} -- characterwise exclusive)
 "
 "   ' - position before latest jump (eg, gg=G'' formats entire file
 "       and returns cursor to where it started)
