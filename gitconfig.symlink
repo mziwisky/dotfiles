@@ -3,6 +3,7 @@
 	email = mziwisky@instructure.com
 
 [alias]
+	s = "status"
 	st = "status"
 	co = "checkout"
 	br = "branch"
