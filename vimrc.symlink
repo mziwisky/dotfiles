@@ -1,5 +1,6 @@
 " MY NOTES/TIPS/CHEATS
 "
+"   J - join with next line (no more 0wd0i<bksp>)
 "   % - move to matching paren/bracket/brace, i.e. ([{}])
 "   g; - go to [count] older position in change list
 "   g, - go to [count] newer position in change list
