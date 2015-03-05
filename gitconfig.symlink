@@ -8,8 +8,8 @@
 	co = "checkout"
 	br = "branch"
 	newtask = "checkout --track origin/master -b"
-	graph = "log --color --graph --decorate --oneline --branches --remotes --tags"
-	graphme = "log --color --graph --decorate --oneline"
+	graph = "log --color --graph --decorate --oneline --branches --remotes --tags HEAD"
+	graphme = "log --color --graph --decorate --oneline HEAD"
   up = "branch -u origin/master"
 	gerrit-submit = "!bash -c ' \
 		    local_ref=$(git symbolic-ref HEAD); \
