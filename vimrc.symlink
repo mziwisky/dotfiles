@@ -22,27 +22,17 @@
 "   < / > - beginning / end of last VISUAL SELECTION
 
 
-"NeoBundle Scripts-----------------------------
+" NeoBundle Scripts-----------------------------
 "
 if has('vim_starting')
   set nocompatible               " Be iMproved
-
-  " Required:
   set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
-" Required:
 call neobundle#begin(expand('~/.vim/bundle'))
 
 " Let NeoBundle manage NeoBundle
-" Required:
 NeoBundleFetch 'Shougo/neobundle.vim'
-
-" Add or remove your Bundles here:
-"NeoBundle 'Shougo/neosnippet.vim'
-"NeoBundle 'Shougo/neosnippet-snippets'
-"NeoBundle 'tpope/vim-fugitive'
-"NeoBundle 'flazz/vim-colorschemes'
 
 NeoBundle 'kien/ctrlp.vim'
 NeoBundle 'scrooloose/nerdtree'
@@ -53,6 +43,7 @@ NeoBundle 'rking/ag.vim' " better grepping! use :Ag
 NeoBundle 'bling/vim-airline' " cool status line
 NeoBundle 'scrooloose/syntastic' " syntax checking
 NeoBundle 'tpope/vim-eunuch' " provides :SudoW[rite] (and some other stuff)
+NeoBundle 'tpope/vim-fugitive' " provides :Gblame and friends
 
 " Languages
 NeoBundle 'vim-ruby/vim-ruby'
