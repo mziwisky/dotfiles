@@ -1,45 +1,56 @@
 [user]
-	name = Michael Ziwisky
-	email = mziwisky@instructure.com
+  name = Michael Ziwisky
+  email = mziwisky@instructure.com
 
 [alias]
-	s = "status"
-	st = "status"
-	co = "checkout"
-	br = "branch"
-	newtask = "checkout --track origin/master -b"
-	graph = "log --color --graph --decorate --oneline --branches --remotes --tags HEAD"
-	graphme = "log --color --graph --decorate --oneline HEAD"
+  s = "status"
+  st = "status"
+  co = "checkout"
+  br = "branch"
+  newtask = "checkout --track origin/master -b"
+  graph = "log --color --graph --decorate --oneline --branches --remotes --tags HEAD"
+  graphme = "log --color --graph --decorate --oneline HEAD"
   up = "branch -u origin/master"
-	gerrit-submit = "!bash -c ' \
-		    local_ref=$(git symbolic-ref HEAD); \
-		    local_name=${local_ref##refs/heads/}; \
-		    remote=$(git config branch.\"$local_name\".remote || echo origin); \
-		    remote_ref=$(git config branch.\"$local_name\".merge); \
-		    remote_name=${remote_ref##refs/heads/}; \
-		    remote_review_ref=\"refs/for/$remote_name\"; \
-		    r=\"\"; \
-		    if [[ $0 != \"\" && $0 != \"bash\" ]]; then r=\"--reviewer=$0\"; fi; \
-		    if [[ $1 != \"\" ]]; then r=\"$r --reviewer=$1\"; fi; \
-		    if [[ $2 != \"\" ]]; then r=\"$r --reviewer=$2\"; fi; \
-		    if [[ $3 != \"\" ]]; then r=\"$r --reviewer=$3\"; fi; \
-		    if [[ $4 != \"\" ]]; then r=\"$r --reviewer=$4\"; fi; \
-		    git push --receive-pack=\"gerrit receive-pack $r\" $remote HEAD:$remote_review_ref'"
+  gerrit-submit = "!bash -c ' \
+    local_ref=$(git symbolic-ref HEAD); \
+    local_name=${local_ref##refs/heads/}; \
+    remote=$(git config branch.\"$local_name\".remote); \
+    if [[ -z $remote ]]; then \
+      read -p \"WARN: No tracking branch -- track origin/master? [y/n] \" -n 1 -r; \
+      echo; \
+      if [[ $REPLY =~ ^[Yy]$ ]]; then \
+        git branch -u origin/master; \
+        remote=origin; \
+      else \
+        echo \"ABORTED: Track a remote branch before calling gerrit-submit\"; \
+        exit 1; \
+      fi; \
+    fi; \
+    remote_ref=$(git config branch.\"$local_name\".merge); \
+    remote_name=${remote_ref##refs/heads/}; \
+    remote_review_ref=\"refs/for/$remote_name\"; \
+    r=\"\"; \
+    if [[ $0 != \"\" && $0 != \"bash\" ]]; then r=\"--reviewer=$0\"; fi; \
+    if [[ $1 != \"\" ]]; then r=\"$r --reviewer=$1\"; fi; \
+    if [[ $2 != \"\" ]]; then r=\"$r --reviewer=$2\"; fi; \
+    if [[ $3 != \"\" ]]; then r=\"$r --reviewer=$3\"; fi; \
+    if [[ $4 != \"\" ]]; then r=\"$r --reviewer=$4\"; fi; \
+    git push --receive-pack=\"gerrit receive-pack $r\" $remote HEAD:$remote_review_ref'"
 
 [grep]
   extendedRegexp = true
 [gc]
-	auto=1
+  auto=1
 [color]
-	ui = true
+  ui = true
 [core]
-	excludesfile = /Users/mziwisky/.gitignore_global
+  excludesfile = /Users/mziwisky/.gitignore_global
 [difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+  path = 
 [mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+  cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+  trustExitCode = true
 [diff]
   tool = opendiff
 [difftool]
@@ -47,4 +58,4 @@
 [difftool "opendiff"]
   cmd = /usr/bin/opendiff \"$LOCAL\" \"$REMOTE\" -merge \"$MERGED\" | cat
 [push]
-	default = simple
+  default = simple
