@@ -1,6 +1,8 @@
 " with CtrlP, if file is already open, open new instance
 " anyway (instead of trying to jump to open window)
 let g:ctrlp_switch_buffer = 0
+" respect vim's CWD
+let g:ctrlp_working_path_mode = 0
 
 " The Silver Searcher
 if executable('ag')
