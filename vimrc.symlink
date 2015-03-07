@@ -44,6 +44,7 @@ NeoBundle 'bling/vim-airline' " cool status line
 NeoBundle 'scrooloose/syntastic' " syntax checking
 NeoBundle 'tpope/vim-eunuch' " provides :SudoW[rite] (and some other stuff)
 NeoBundle 'tpope/vim-fugitive' " provides :Gblame and friends
+NeoBundle 'yssl/QFEnter' " open quickfix file in previously focused window
 
 " Languages
 NeoBundle 'vim-ruby/vim-ruby'
