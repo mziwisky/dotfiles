@@ -221,6 +221,7 @@ cnoremap <Tab> <C-L><C-D>
 " vmap r "_dP
 
 nnoremap <Leader>n :NERDTreeToggle<CR> :NERDTreeMirror<CR>
+nnoremap <Leader>N :NERDTreeFind<CR> :NERDTreeMirror<CR>
 
 " [b and ]b for prev/next buffer
 nnoremap <silent> [b :bp<CR>
