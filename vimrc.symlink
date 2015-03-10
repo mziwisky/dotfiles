@@ -138,7 +138,6 @@ else
 endif
 
 
-
 " ## Indentation and Tabs
 
 " two spaces pleases
@@ -217,9 +216,6 @@ inoremap <C-U> <C-G>u<C-U>
 " complete in command mode with tab
 cnoremap <Tab> <C-L><C-D>
 
-" Use r in visual mode to replace selection with a paste.
-" vmap r "_dP
-
 nnoremap <Leader>n :NERDTreeToggle<CR> :NERDTreeMirror<CR>
 nnoremap <Leader>N :NERDTreeFind<CR> :NERDTreeMirror<CR>
 
@@ -230,6 +226,12 @@ nnoremap <silent> ]b :bn<CR>
 " after indenting in visual mode, retain selection
 vnoremap > >gv
 vnoremap < <gv
+
+" when pasting in visual mode, don't overwrite the default register
+vnoremap p "_dP
+
+" in visual mode, * searches for the selected text
+vnoremap * "zy/<C-r>z<CR>
 
 " vim-expand-region maps to v/<C-v>
 vmap v <Plug>(expand_region_expand)
@@ -299,11 +301,7 @@ vnoremap <Leader>P "+P
 " nnoremap <Leader>G :grep! "\b<C-R><C-A>\b"<CR>:cw<CR>
 nnoremap <Leader>g :Ag! -wQ "<cword>"<CR>
 nnoremap <Leader>G :Ag! -wQ "<cWORD>"<CR>
-vnoremap <Leader>g "gy:Ag! -Q "<C-R>g"<CR>
-
-
-" TODO: explore paulh's other plugins, and ddorman's too
-" TODO: add SudoW from janus, and also see if you like anything else from it
+vnoremap <Leader>g "zy:Ag! -Q "<C-R>z"<CR>
 
 
 " <F3> to switch between mouse modes
