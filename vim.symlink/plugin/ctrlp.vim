@@ -14,6 +14,9 @@ if executable('ag')
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
-else
-  echo "HEY YOU! please install `ag` version 0.25.0 (later versions were giving me issues with CtrlP)"
+
+  " we need version 0.25.0 -- later ones were giving CtrlP issues
+  if split(system("ag --version"), "[ \n\r\t]")[2] != '0.25.0'
+    echo "HEY YOU! It seems you need `ag` v0.25.0 to make CtrlP happy -- please install _that_ version!"
+  endif
 endif
