@@ -194,6 +194,9 @@ set ttimeoutlen=0
 nnoremap <Leader>w :w<CR>
 nnoremap <Leader>q :q<CR>
 
+" make Y work like D, C, etc.
+nnoremap Y y$
+
 " make up, down, j, k keys work intuitively for long paragraphs
 nmap <up> gk
 nmap <down> gj

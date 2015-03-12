@@ -14,4 +14,6 @@ if executable('ag')
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
+else
+  echo "HEY YOU! please install `ag` version 0.25.0 (later versions were giving me issues with CtrlP)"
 endif
