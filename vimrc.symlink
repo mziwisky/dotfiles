@@ -50,6 +50,7 @@ NeoBundle 'scrooloose/syntastic' " syntax checking
 NeoBundle 'tpope/vim-eunuch' " provides :SudoW[rite] (and some other stuff)
 NeoBundle 'tpope/vim-fugitive' " provides :Gblame and friends
 NeoBundle 'yssl/QFEnter' " open quickfix file in previously focused window
+NeoBundle 'tpope/vim-endwise' " auto-insert `end` in ruby and other langs
 
 " Languages
 NeoBundle 'vim-ruby/vim-ruby'
