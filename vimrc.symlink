@@ -62,8 +62,7 @@ NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'mxw/vim-jsx'
 NeoBundle 'fatih/vim-go'
 
-NeoBundle 'tpope/vim-vividchalk'
-NeoBundle 'chriskempson/base16-vim'
+NeoBundle 'altercation/vim-colors-solarized.git'
 
 " Required:
 call neobundle#end()
@@ -132,17 +131,8 @@ set guioptions-=r
 " ## Theme
 
 set background=dark
-
-if !has("gui_running")
-  colorscheme vividchalk
-  let g:airline_theme='kalisi'
-  " search higlighting is too subtle -- jazz it up
-  hi Search cterm=NONE ctermfg=black ctermbg=yellow
-else
-  colorscheme base16-atelierforest
-  let g:airline_theme='base16'
-  hi Search guifg=black guibg=yellow
-endif
+let g:airline_theme='base16'
+colorscheme solarized
 
 
 " ## Indentation and Tabs
