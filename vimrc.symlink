@@ -349,3 +349,9 @@ nmap <C-p> :bprev<CR>
 " TODO: maybe i should be using wildignore for this stuff?
 let g:ignore_dirs='node_modules'
 
+" when switching buffers/splits, check to see if the buffer has been
+" modified by another process. like what gvim does when it receives
+" focus. 'silent!' ignores errors so that windows for which checktime
+" doesn't work -- e.g. the Command Line (q:) -- don't complain
+autocmd BufWinEnter,WinEnter * silent! checktime
+
