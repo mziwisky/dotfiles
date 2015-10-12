@@ -38,6 +38,7 @@ alias rm='rm -i'
 alias mv='mv -v -i'
 alias vdiff=opendiff
 alias grep='grep --color=auto'
+alias ngrok-host='ngrok http -host-header=rewrite'
 
 # "search no svn" - look for an expression in all files
 # under dir (current if unspecified), but skip .svn directories
@@ -71,7 +72,7 @@ export PATH=~/scripts:$PATH
 
 # Host-specific configs
 case $(hostname -s) in
-	"shinestructure")
+	"mziwisky-laptop") # formerly "shinestructure"
 		# for android `adb` tool
 		export PATH=~/dev/android-sdk-macosx/platform-tools:$PATH
 		# for android `ndk-build` and company
@@ -128,3 +129,13 @@ fi
 
 # grr... canvas' `bx rake js:compile` needs to be able to open a zillion files at once
 ulimit -n 4096
+
+# dinghy/docker compels me!
+export DOCKER_HOST=tcp://127.0.0.1:2376
+export DOCKER_CERT_PATH=/Users/mziwisky/.dinghy/certs
+export DOCKER_TLS_VERIFY=1
+
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
+export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
