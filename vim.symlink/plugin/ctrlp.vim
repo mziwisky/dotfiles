@@ -3,6 +3,8 @@
 let g:ctrlp_switch_buffer = 0
 " respect vim's CWD
 let g:ctrlp_working_path_mode = 0
+" disable default <c-p> mapping
+let g:ctrlp_map = ''
 
 " The Silver Searcher
 if executable('ag')

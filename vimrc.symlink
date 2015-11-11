@@ -223,6 +223,9 @@ nnoremap <Leader>N :NERDTreeFind<CR> :NERDTreeMirror<CR>
 nnoremap <silent> [b :bp<CR>
 nnoremap <silent> ]b :bn<CR>
 
+" :BD to destroy the buffer but keep the split open (w/ previous buffer in it)
+command BD bp\|bd \#
+
 " after indenting in visual mode, retain selection
 vnoremap > >gv
 vnoremap < <gv
@@ -277,6 +280,7 @@ nnoremap <Leader>b :CtrlPBuffer<CR>
 nnoremap <Leader>m :CtrlPMRUFiles<CR>
 nnoremap <Leader>O :CtrlPMixed<CR>
 
+" tig blame this file. this doesn't get much love since i installed vim-fugitive... maybe delete it
 nnoremap <Leader>B :!tig blame % +<C-r>=line('.')<CR><CR>
 
 " Copy & paste to system clipboard with <Space>p and <Space>y
