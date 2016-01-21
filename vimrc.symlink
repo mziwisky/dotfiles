@@ -5,18 +5,10 @@
 "        around w/o repeating the change). w/o operator pending (i.e. `gn`
 "        alone), just visually select next search match.
 "   g* - like *, but don't put "\<" and "\>" around the word
-"   % - move to matching paren/bracket/brace, i.e. ([{}])
 "   g; - go to [count] older position in change list
 "   g, - go to [count] newer position in change list
-"   gi - enter insertion mode with cursor in the same spot it was when you
-"        previously left insertion mode
 "   gp - paste and leave cursor at end
-"   J - join with next line (no more 0wd0i<bksp>)
-"   v_o - jump between beginning and end of selection
 "   :only - close all other splits
-"   v_p - replace selection with contents of "" (and replace "" with selection)
-"   D - delete to end of line (synonym for d$)
-"   I - insert at beginning of current line (after whitespace)
 "
 " MARKS (move to with quote or backtick: '{mark} -- linewise
 "                                        `{mark} -- characterwise exclusive)
