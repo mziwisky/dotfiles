@@ -1,12 +1,12 @@
 " don't open buffer for first search result
 cabbrev Ag Ag!
 
-" --vimgrep (consistent output we can parse) is available from version  0.25.0+
-if split(system("ag --version"), "[ \n\r\t]")[2] =~ '\d\+.[2-9][5-9]\(.\d\+\)\?'
-  let g:ag_prg="ag --vimgrep"
+" --vimgrep (consistent output we can parse) is available in later versions
+silent ! ag --help | grep -q vimgrep
+if v:shell_error " if no --vimgrep, format it manually
+  let g:ag_prg="ag --column --nogroup --noheading --nobreak"
 else
-  " --noheading seems odd here, but see https://github.com/ggreer/the_silver_searcher/issues/361
-  let g:ag_prg="ag --column --nogroup --noheading"
+  let g:ag_prg="ag --vimgrep"
 endif
 
 if exists("g:ignore_dirs")
