@@ -347,6 +347,12 @@ nmap <C-p> :bprev<CR>
 " TODO: maybe i should be using wildignore for this stuff?
 let g:ignore_dirs='node_modules'
 
+" little experiment. if the pwd when you open vim has a .vim-ignore-dirs in
+" it, then add that to our global ignore_dirs
+if filereadable('.vim-ignore-dirs')
+  let g:ignore_dirs.=' '.join(readfile('.vim-ignore-dirs'), ' ')
+endif
+
 " when switching buffers/splits, check to see if the buffer has been
 " modified by another process. like what gvim does when it receives
 " focus. 'silent!' ignores errors so that windows for which checktime
