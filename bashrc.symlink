@@ -161,3 +161,7 @@ case $(hostname -s) in
 		PATH=/Users/mziwisky/dev/android-ndk-r9:$PATH
 		;;
 esac
+
+# enable chruby and auto-switching (using .ruby-version file)
+[ -f /usr/local/share/chruby/chruby.sh ] && . /usr/local/share/chruby/chruby.sh
+[ -f /usr/local/share/chruby/auto.sh ] && . /usr/local/share/chruby/auto.sh
