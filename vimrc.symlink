@@ -8,7 +8,11 @@
 "   g; - go to [count] older position in change list
 "   g, - go to [count] newer position in change list
 "   gp - paste and leave cursor at end
-"   :only - close all other splits
+"   C-a - increment the first number found on current line after cursor
+"   @: - repeat command (just like @x runs `x` macro)
+"   @@ - repeat last macro you ran
+"   q/ - open search history! Enter to select item
+"   q: - open command history! Enter to select item
 "
 " MARKS (move to with quote or backtick: '{mark} -- linewise
 "                                        `{mark} -- characterwise exclusive)
@@ -45,6 +49,8 @@ NeoBundle 'yssl/QFEnter' " open quickfix file in previously focused window
 NeoBundle 'tpope/vim-endwise' " auto-insert `end` in ruby and other langs
 NeoBundle 'tpope/vim-surround' " smart edits for things that 'surround' like parens and HTML tags
 NeoBundle 'tpope/vim-repeat' " allow `.` repeating of vim-surround commands
+" NeoBundle 'Valloric/YouCompleteMe' " autocompletion
+" i want a plugin that uses git to show which lines have been changed
 
 " Languages
 NeoBundle 'vim-ruby/vim-ruby'
@@ -55,6 +61,7 @@ NeoBundle 'nono/vim-handlebars'
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'mxw/vim-jsx'
 NeoBundle 'fatih/vim-go'
+NeoBundle 'elixir-lang/vim-elixir'
 
 NeoBundle 'altercation/vim-colors-solarized.git'
 
@@ -126,6 +133,10 @@ set guioptions-=r
 
 set background=dark
 let g:airline_theme='base16'
+" if !has("gui_running")
+"   let g:solarized_termtrans=1
+"   let g:solarized_termcolors=256
+" endif
 colorscheme solarized
 
 
@@ -210,6 +221,9 @@ inoremap <C-U> <C-G>u<C-U>
 " complete in command mode with tab
 cnoremap <Tab> <C-L><C-D>
 
+" Tab does autocompletion in insert mode
+inoremap <Tab> <C-n>
+
 nnoremap <Leader>n :NERDTreeToggle<CR> :NERDTreeMirror<CR>
 nnoremap <Leader>N :NERDTreeFind<CR> :NERDTreeMirror<CR>
 
@@ -277,8 +291,9 @@ nnoremap <Leader>O :CtrlPMixed<CR>
 " tig blame this file. this doesn't get much love since i installed vim-fugitive... maybe delete it
 nnoremap <Leader>B :!tig blame % +<C-r>=line('.')<CR><CR>
 
-" Copy & paste to system clipboard with <Space>p and <Space>y
+" Copy & paste to system clipboard with <Space>y and <Space>p
 nnoremap <Leader>y "+y
+nnoremap <Leader>Y "+y$
 nnoremap <Leader>d "+d
 nnoremap <Leader>p "+p
 nnoremap <Leader>P "+P
@@ -330,6 +345,8 @@ set pastetoggle=<F4>
 
 set history=500 " keep 500 lines of command line history
 
+set formatoptions+=j " Delete comment character when joining commented lines
+
 " ddorman's custom :Ag -- paulh uses a package. might check it out...
 " command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 
@@ -359,3 +376,40 @@ endif
 " doesn't work -- e.g. the Command Line (q:) -- don't complain
 autocmd BufWinEnter,WinEnter * silent! checktime
 
+" After whitespace, insert the directory of the current file
+" e.g. typing `:echo <C-P>` will expand into something like ':echo /Users/mziwisky'
+cnoremap <expr> <C-P> getcmdline()[getcmdpos()-2] ==# ' ' ? expand('%:p:h') : "\<C-P>"
+
+
+
+" GODDAMN.  trying to fix vmode pasting over last word. i hate vimscript.
+" function! OverwriteInVisual()
+"   let a:beginning_col = getpos("'<")[2]
+"   let a:ending_col = getpos("'>")[2]
+"   let a:last_col = col("$")
+"   echo a:last_col a:ending_col
+"   " let [lnum1, col1] = getpos("'<")[1:2]
+"   " let [lnum2, col2] = getpos("'>")[1:2]
+"   " :'<,'>d
+"
+"   " normal "_d
+"   " execute "d"
+"   " d
+"   " let a:ending_col = getpos(".")[2]
+"   " if a:beginning_col == a:ending_col
+"   "   execute 'p'
+"   " else
+"   "   execute 'p'
+"   " endif
+" endfunction
+" function! OverwriteInVis()
+"   if col("$") - 1 == getpos("'>")[2]
+"     return "\"_dp"
+"   else
+"     return "\"_dP"
+"   end
+" endfunction
+"
+" vnoremap p :call OverwriteInVisual()<CR>
+" vnoremap <expr> p col("$") - 1 == getpos("'>")[2] ? "\"_dp" : "\"_dP"
+" vnoremap <expr> p OverwriteInVis()
