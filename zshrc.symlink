@@ -62,51 +62,46 @@ function docker-gc()
 # under dir (current if unspecified), but skip .svn directories
 function sns()
 {
-	function doit() {
-		grep -r --exclude-dir=.svn --exclude-dir=.git "$2" $1
-	}
+  function doit()
+  {
+    grep -r --exclude-dir=.svn --exclude-dir=.git "$2" $1
+  }
 
-	if [ $# = 1 ]; then
-		doit . $1
-	elif [ $# = 2 ]; then
-		doit $1 $2
-	else
-		echo 'usage: sns [dir] expression'
-	fi
+  if [ $# = 1 ]; then
+    doit . $1
+  elif [ $# = 2 ]; then
+    doit $1 $2
+  else
+    echo 'usage: sns [dir] expression'
+  fi
 }
 
 function mkcd()
 {
-	mkdir -p $1 && cd $1
-}
-
-function rbenvsudo(){
-  executable=$1
-  shift 1
-  sudo $(rbenv which $executable) $* 
+  mkdir -p $1 && cd $1
 }
 
 export PATH=~/scripts:$PATH
 
 # Host-specific configs
 case $(hostname -s) in
-	"mziwisky-l") # formerly "shinestructure"
+  "mziwisky-l") # formerly "shinestructure"
     if [ -e /usr/local/share/chruby/chruby.sh ]; then
       source /usr/local/share/chruby/chruby.sh
       source /usr/local/share/chruby/auto.sh
     fi
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-		export PGHOST=localhost
+    export PGHOST=localhost
     export PGDATA=/usr/local/var/postgres
     # NOTE: I don't think the below alias is needed -- if you want to start
     # the postgres server, probably just use `pg_ctl start` instead
     alias pgstart='postgres -D $PGDATA -r $PGDATA/server.log'
     alias mongostart='mongod --config /usr/local/etc/mongod.conf &>/dev/null &'
-		alias retina='open ~/scripts/retina.app'
-		alias bx='bundle exec'
+    alias retina='open ~/scripts/retina.app'
+    alias bx='bundle exec'
     alias nx='PATH=$(npm bin):$PATH'
-		alias reds='redis-server /usr/local/etc/redis.conf'
+    alias reds='redis-server /usr/local/etc/redis.conf'
     alias pyserv='python -m SimpleHTTPServer'
     alias asc='java -jar /Applications/Adobe\ Flash\ Builder\ 4.7/sdks/4.9.1AIR3.9/lib/asc.jar'
     alias asc2='java -jar /Applications/Adobe\ Flash\ Builder\ 4.7/eclipse/plugins/com.adobe.flash.compiler_4.7.0.349722/AIRSDK.3.9/lib/compiler.jar'
@@ -115,22 +110,22 @@ case $(hostname -s) in
     alias galleryreset='pushd ~/repos/gallery && bx rake assets:clobber && rm -rf node_modules && rm -rf bower_components && npm install && bower install && popd'
     alias getsmartdbreset='dropdb get_smart_test && createdb get_smart_test && RAILS_ENV=test bin/rails runner "ActiveRecord::Base.connection.execute(\"CREATE SCHEMA hstore; CREATE EXTENSION HSTORE SCHEMA hstore\")" && RAILS_ENV=test bx rake db:migrate'
     alias instdokku='ssh dokku@internal.instructure.com'
-		;;
-	"shininess")
-		alias flasccmake='PATH=/Users/mziwisky/crossbridge/sdk/usr/bin:$PATH make FLASCC=/Users/mziwisky/crossbridge/sdk FLEX=/Applications/Adobe\ Flash\ Builder\ 4.7/sdks/4.9.1AIR3.7/'
-		# for homebrew-installed ruby
-		export PATH=/usr/local/opt/ruby/bin:$PATH
-		;;
-	*)
-		echo "WARNING: host $(hostname -s) not familiar to .zshrc"
+    ;;
+  "shininess")
+    alias flasccmake='PATH=/Users/mziwisky/crossbridge/sdk/usr/bin:$PATH make FLASCC=/Users/mziwisky/crossbridge/sdk FLEX=/Applications/Adobe\ Flash\ Builder\ 4.7/sdks/4.9.1AIR3.7/'
+    # for homebrew-installed ruby
+    export PATH=/usr/local/opt/ruby/bin:$PATH
+    ;;
+  *)
+    echo "WARNING: host $(hostname -s) not familiar to .zshrc"
 esac
 
 if [ -n "$ZSH_THEME" ]; then
-	# oh-my-zsh is probably being used
+  # oh-my-zsh is probably being used
 else
-	# probably no oh-my-zsh, so set your PS1
-	PS1="%F{green}[%n@%m %F{red}%1~%F{green}]%(#.#.$)%f "
-	echo "You should probably get oh-my-zsh, n00b."
+  # probably no oh-my-zsh, so set your PS1
+  PS1="%F{green}[%n@%m %F{red}%1~%F{green}]%(#.#.$)%f "
+  echo "You should probably get oh-my-zsh, n00b."
 fi
 
 # grr... canvas' `bx rake js:compile` needs to be able to open a zillion files at once
