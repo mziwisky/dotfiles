@@ -1,0 +1,4 @@
+# Mac-only
+if [ "$(uname)" == "Darwin" ]; then
+  ssh-add -A
+fi
