@@ -91,7 +91,10 @@ case $(hostname -s) in
       source /usr/local/share/chruby/auto.sh
     fi
     export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" --no-use # This loads nvm,
+    # but without support for .nvmrc files, i.e. it doesn't automatically call
+    # `nvm use` when you `cd`. auto-use may be convenient for heavy node usage,
+    # but it makes zsh shells take 1+ seconds to load, which drives me crazy.
     export PGHOST=localhost
     export PGDATA=/usr/local/var/postgres
     # NOTE: I don't think the below alias is needed -- if you want to start
