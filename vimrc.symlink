@@ -42,7 +42,7 @@ NeoBundle 'ntpeters/vim-better-whitespace' " trailing whitespace highlighting, :
 NeoBundle 'terryma/vim-expand-region' " v/<C-v> to expand/contract selection
 NeoBundle 'rking/ag.vim' " better grepping! use :Ag
 NeoBundle 'bling/vim-airline' " cool status line
-NeoBundle 'scrooloose/syntastic' " syntax checking
+NeoBundle 'vim-syntastic/syntastic' " syntax checking
 NeoBundle 'tpope/vim-eunuch' " provides :SudoW[rite] (and some other stuff)
 NeoBundle 'tpope/vim-fugitive' " provides :Gblame and friends
 NeoBundle 'yssl/QFEnter' " open quickfix file in previously focused window
