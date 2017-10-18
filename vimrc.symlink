@@ -77,6 +77,10 @@ filetype plugin indent on
 NeoBundleCheck
 "End NeoBundle Scripts-------------------------
 
+" fzf installed via homebrew, loaded here:
+set rtp+=/usr/local/opt/fzf
+" hack to get it working with MacVim. works, but slow and annoying.
+let g:fzf_launcher = "in_a_new_term_function %s"
 
 " Space Leader!
 let mapleader = "\<Space>"
