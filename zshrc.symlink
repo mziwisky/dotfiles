@@ -95,8 +95,11 @@ case $(hostname -s) in
     # but without support for .nvmrc files, i.e. it doesn't automatically call
     # `nvm use` when you `cd`. auto-use may be convenient for heavy node usage,
     # but it makes zsh shells take 1+ seconds to load, which drives me crazy.
+    type pyenv > /dev/null && eval "$(pyenv init -)" # this slows shell load a
+    # little too, but i'm tolerating it for now
     export PGHOST=localhost
     export PGDATA=/usr/local/var/postgres
+    export VAULT_ADDR=https://vault.insops.net
     # NOTE: I don't think the below alias is needed -- if you want to start
     # the postgres server, probably just use `pg_ctl start` instead
     alias pgstart='postgres -D $PGDATA -r $PGDATA/server.log'
@@ -131,8 +134,8 @@ else
   echo "You should probably get oh-my-zsh, n00b."
 fi
 
-# grr... canvas' `bx rake js:compile` needs to be able to open a zillion files at once
-ulimit -n 4096
+# # grr... canvas' `bx rake js:compile` needs to be able to open a zillion files at once
+# ulimit -n 4096
 
 # dinghy/docker compels me!
 export DOCKER_HOST=tcp://192.168.99.100:2376
