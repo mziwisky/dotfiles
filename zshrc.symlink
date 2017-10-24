@@ -147,3 +147,10 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
 export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
+
+# arc-analytics needs to use java8
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home
+
+# ftl-engine output is unreadable with solarized, so i made a theme. use it
+# when we enter a vaulted shell with SWF_DOMAIN set.
+[ -z "$SWF_DOMAIN" ] || echo -e "\033]50;SetProfile=Default but with readable ftl-engine output\a"
