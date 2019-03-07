@@ -85,6 +85,8 @@ export PATH=~/scripts:$PATH
 
 # Host-specific configs
 case $(hostname -s) in
+  "mziwisky-l2")
+    ;& # this is the syntax for bash case-statement fallthrough
   "mziwisky-l") # formerly "shinestructure"
     if [ -e /usr/local/share/chruby/chruby.sh ]; then
       source /usr/local/share/chruby/chruby.sh

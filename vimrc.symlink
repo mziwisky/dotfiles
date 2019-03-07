@@ -22,60 +22,69 @@
 "   [ / ] - beginning / end of last YANK or PASTE
 "   < / > - beginning / end of last VISUAL SELECTION
 
-
-" NeoBundle Scripts-----------------------------
-"
-if has('vim_starting')
+"dein Scripts-----------------------------
+if &compatible
   set nocompatible               " Be iMproved
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
-call neobundle#begin(expand('~/.vim/bundle'))
-
-" Let NeoBundle manage NeoBundle
-NeoBundleFetch 'Shougo/neobundle.vim'
-
-NeoBundle 'kien/ctrlp.vim'
-NeoBundle 'scrooloose/nerdtree'
-NeoBundle 'tomtom/tcomment_vim' " (un)commenting with gc{motion} (but mapped to <Leader>c{motion} instead)
-NeoBundle 'ntpeters/vim-better-whitespace' " trailing whitespace highlighting, :StripWhitespace to clean file
-NeoBundle 'terryma/vim-expand-region' " v/<C-v> to expand/contract selection
-NeoBundle 'rking/ag.vim' " better grepping! use :Ag
-NeoBundle 'bling/vim-airline' " cool status line
-NeoBundle 'vim-syntastic/syntastic' " syntax checking
-NeoBundle 'tpope/vim-eunuch' " provides :SudoW[rite] (and some other stuff)
-NeoBundle 'tpope/vim-fugitive' " provides :Gblame and friends
-NeoBundle 'yssl/QFEnter' " open quickfix file in previously focused window
-NeoBundle 'tpope/vim-endwise' " auto-insert `end` in ruby and other langs
-NeoBundle 'tpope/vim-surround' " smart edits for things that 'surround' like parens and HTML tags
-NeoBundle 'tpope/vim-repeat' " allow `.` repeating of vim-surround commands
-" NeoBundle 'Valloric/YouCompleteMe' " autocompletion
-" i want a plugin that uses git to show which lines have been changed
-
-" Languages
-NeoBundle 'vim-ruby/vim-ruby'
-NeoBundle 'kana/vim-textobj-user' " dependency of vim-textobj-rubyblock
-NeoBundle 'nelstrom/vim-textobj-rubyblock'
-NeoBundle 'pangloss/vim-javascript'
-NeoBundle 'nono/vim-handlebars'
-NeoBundle 'kchmck/vim-coffee-script'
-NeoBundle 'mxw/vim-jsx'
-NeoBundle 'fatih/vim-go'
-NeoBundle 'elixir-lang/vim-elixir'
-
-NeoBundle 'altercation/vim-colors-solarized.git'
+" Required:
+set runtimepath+=~/.vim/bundles/repos/github.com/Shougo/dein.vim
 
 " Required:
-call neobundle#end()
+if dein#load_state('~/.vim/bundles')
+  call dein#begin('~/.vim/bundles')
+
+  " Let dein manage dein
+  " Required:
+  call dein#add('~/.vim/bundles/repos/github.com/Shougo/dein.vim')
+
+  call dein#add('kien/ctrlp.vim')
+  call dein#add('scrooloose/nerdtree')
+  call dein#add('tomtom/tcomment_vim') " (un)commenting with gc{motion} (but mapped to <Leader>c{motion} instead)
+  call dein#add('ntpeters/vim-better-whitespace') " trailing whitespace highlighting, :StripWhitespace to clean file
+  call dein#add('terryma/vim-expand-region') " v/<C-v> to expand/contract selection
+  call dein#add('rking/ag.vim') " better grepping! use :Ag
+  call dein#add('bling/vim-airline') " cool status line
+  call dein#add('vim-syntastic/syntastic') " syntax checking
+  call dein#add('tpope/vim-eunuch') " provides :SudoW[rite] (and some other stuff)
+  call dein#add('tpope/vim-fugitive') " provides :Gblame and friends
+  call dein#add('yssl/QFEnter') " open quickfix file in previously focused window
+  call dein#add('tpope/vim-endwise') " auto-insert `end` in ruby and other langs
+  call dein#add('tpope/vim-surround') " smart edits for things that 'surround' like parens and HTML tags
+  call dein#add('tpope/vim-repeat') " allow `.` repeating of vim-surround commands
+  " call dein#add('Valloric/YouCompleteMe') " autocompletion
+  " i want a plugin that uses git to show which lines have been changed
+
+  " Languages
+  call dein#add('vim-ruby/vim-ruby')
+  call dein#add('kana/vim-textobj-user') " dependency of vim-textobj-rubyblock
+  call dein#add('nelstrom/vim-textobj-rubyblock')
+  call dein#add('pangloss/vim-javascript')
+  call dein#add('nono/vim-handlebars')
+  call dein#add('kchmck/vim-coffee-script')
+  call dein#add('mxw/vim-jsx')
+  call dein#add('fatih/vim-go')
+  call dein#add('elixir-lang/vim-elixir')
+
+  call dein#add('altercation/vim-colors-solarized.git')
+  call dein#add('vim-airline/vim-airline-themes')
+
+  " Required:
+  call dein#end()
+  call dein#save_state()
+endif
 
 " Required: (this loads indent files, to automatically do
 " language-dependent indenting)
 filetype plugin indent on
+syntax enable
 
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
-NeoBundleCheck
-"End NeoBundle Scripts-------------------------
+" If you want to install not installed plugins on startup.
+if dein#check_install()
+  call dein#install()
+endif
+
+"End dein Scripts-------------------------
 
 " fzf installed via homebrew, loaded here:
 set rtp+=/usr/local/opt/fzf

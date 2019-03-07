@@ -1,0 +1,4 @@
+.DS_Store
+.vim-ignore-dirs
+.byebug_history
+.idea
