@@ -301,9 +301,6 @@ nnoremap <Leader>b :CtrlPBuffer<CR>
 nnoremap <Leader>m :CtrlPMRUFiles<CR>
 nnoremap <Leader>O :CtrlPMixed<CR>
 
-" tig blame this file. this doesn't get much love since i installed vim-fugitive... maybe delete it
-nnoremap <Leader>B :!tig blame % +<C-r>=line('.')<CR><CR>
-
 " Copy & paste to system clipboard with <Space>y and <Space>p
 nnoremap <Leader>y "+y
 nnoremap <Leader>Y "+y$
@@ -314,6 +311,9 @@ vnoremap <Leader>y "+y
 vnoremap <Leader>d "+d
 vnoremap <Leader>p "+p
 vnoremap <Leader>P "+P
+
+" share links with coworkers
+command Blit ! echo https://gerrit.instructure.com/plugins/gitiles/$(basename `git rev-parse --show-toplevel`)/+/$(git log -1 --pretty=format:\%H origin/master)/% | pbcopy
 
 
 " enter reruns last test...
