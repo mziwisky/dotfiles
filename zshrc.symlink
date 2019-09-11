@@ -160,3 +160,5 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Hom
 export PATH="/usr/local/opt/scala@2.11/bin:$PATH"
 export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
 # export SBT_OPTS="-Xmx2G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=2G -Xss2M"
+
+eval "$( command rapture shell-init )"
