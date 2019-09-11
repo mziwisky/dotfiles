@@ -65,6 +65,7 @@ if dein#load_state('~/.vim/bundles')
   call dein#add('mxw/vim-jsx')
   call dein#add('fatih/vim-go')
   call dein#add('elixir-lang/vim-elixir')
+  call dein#add('hashivim/vim-terraform')
 
   call dein#add('altercation/vim-colors-solarized.git')
   call dein#add('vim-airline/vim-airline-themes')
