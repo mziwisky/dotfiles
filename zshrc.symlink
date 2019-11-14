@@ -118,11 +118,7 @@ case $(hostname -s) in
     alias galleryreset='pushd ~/repos/gallery && bx rake assets:clobber && rm -rf node_modules && rm -rf bower_components && npm install && bower install && popd'
     alias getsmartdbreset='dropdb get_smart_test && createdb get_smart_test && RAILS_ENV=test bin/rails runner "ActiveRecord::Base.connection.execute(\"CREATE SCHEMA hstore; CREATE EXTENSION HSTORE SCHEMA hstore\")" && RAILS_ENV=test bx rake db:migrate'
     alias instdokku='ssh dokku@internal.instructure.com'
-    ;;
-  "shininess")
-    alias flasccmake='PATH=/Users/mziwisky/crossbridge/sdk/usr/bin:$PATH make FLASCC=/Users/mziwisky/crossbridge/sdk FLEX=/Applications/Adobe\ Flash\ Builder\ 4.7/sdks/4.9.1AIR3.7/'
-    # for homebrew-installed ruby
-    export PATH=/usr/local/opt/ruby/bin:$PATH
+    alias rr='rapture refresh'
     ;;
   *)
     echo "WARNING: host $(hostname -s) not familiar to .zshrc"
