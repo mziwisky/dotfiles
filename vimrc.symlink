@@ -253,7 +253,7 @@ vnoremap > >gv
 vnoremap < <gv
 
 " when pasting in visual mode, don't overwrite the default register
-vnoremap p "_dP
+vnoremap p pgvygv<Esc>
 
 " in visual mode, * searches for the selected text
 vnoremap * "zy/<C-r>z<CR>
@@ -364,11 +364,8 @@ set formatoptions+=j " Delete comment character when joining commented lines
 " ddorman's custom :Ag -- paulh uses a package. might check it out...
 " command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 
-
-" trying out some shortcuts to see if i'll ever use them
+" unhighlight search hits
 nmap <silent> \n :nohlsearch<CR>
-nmap <silent> \p :set paste!<CR>
-nmap <silent> \l :setlocal number!<CR>
 
 " next/previous buffer
 nmap <C-n> :bnext<CR>
@@ -394,36 +391,3 @@ autocmd BufWinEnter,WinEnter * silent! checktime
 " e.g. typing `:echo <C-P>` will expand into something like ':echo /Users/mziwisky'
 cnoremap <expr> <C-P> getcmdline()[getcmdpos()-2] ==# ' ' ? expand('%:p:h') : "\<C-P>"
 
-
-
-" GODDAMN.  trying to fix vmode pasting over last word. i hate vimscript.
-" function! OverwriteInVisual()
-"   let a:beginning_col = getpos("'<")[2]
-"   let a:ending_col = getpos("'>")[2]
-"   let a:last_col = col("$")
-"   echo a:last_col a:ending_col
-"   " let [lnum1, col1] = getpos("'<")[1:2]
-"   " let [lnum2, col2] = getpos("'>")[1:2]
-"   " :'<,'>d
-"
-"   " normal "_d
-"   " execute "d"
-"   " d
-"   " let a:ending_col = getpos(".")[2]
-"   " if a:beginning_col == a:ending_col
-"   "   execute 'p'
-"   " else
-"   "   execute 'p'
-"   " endif
-" endfunction
-" function! OverwriteInVis()
-"   if col("$") - 1 == getpos("'>")[2]
-"     return "\"_dp"
-"   else
-"     return "\"_dP"
-"   end
-" endfunction
-"
-" vnoremap p :call OverwriteInVisual()<CR>
-" vnoremap <expr> p col("$") - 1 == getpos("'>")[2] ? "\"_dp" : "\"_dP"
-" vnoremap <expr> p OverwriteInVis()
