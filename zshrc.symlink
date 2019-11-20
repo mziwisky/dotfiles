@@ -119,6 +119,7 @@ case $(hostname -s) in
     alias getsmartdbreset='dropdb get_smart_test && createdb get_smart_test && RAILS_ENV=test bin/rails runner "ActiveRecord::Base.connection.execute(\"CREATE SCHEMA hstore; CREATE EXTENSION HSTORE SCHEMA hstore\")" && RAILS_ENV=test bx rake db:migrate'
     alias instdokku='ssh dokku@internal.instructure.com'
     alias rr='rapture refresh'
+    alias tf='terraform'
     ;;
   *)
     echo "WARNING: host $(hostname -s) not familiar to .zshrc"
