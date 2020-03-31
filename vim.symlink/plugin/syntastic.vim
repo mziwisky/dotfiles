@@ -6,5 +6,9 @@
 let g:syntastic_ruby_checkers = ['mri']
 let g:syntastic_ruby_mri_exec = filereadable($HOME.'/.rbenv/shims/ruby') ? $HOME.'/.rbenv/shims/ruby' : 'ruby'
 
+" :middle_finger: python2
+ let g:syntastic_python_python_exec = 'python3'
+ let g:syntastic_python_checkers = ['python']
+
 " scala checking is crazy slow
 let g:syntastic_scala_checkers = ['']
