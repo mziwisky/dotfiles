@@ -160,3 +160,4 @@ export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
 # export SBT_OPTS="-Xmx2G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=2G -Xss2M"
 
 eval "$( command rapture shell-init )"
+export CHOPS_REGIONS=us-east-1,us-west-2,eu-west-1,eu-central-1,ca-central-1,ap-southeast-1,ap-southeast-2
