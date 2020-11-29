@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+# sets up the symlinks.
+
+require 'pathname'
+
+specials = {
+  'zshrc.symlink' => '.zshrc.pre-oh-my-zsh'
+}
+
+links = Dir.chdir(__dir__) do
+  Hash[
+    Dir['*.symlink'].map do |l|
+      [l, '.' + l.gsub(/\.symlink$/, '')]
+    end
+  ]
+end.merge(specials)
+
+Dir.chdir do
+  puts "Executing from home dir..."
+  home_to_links = Pathname.new(__dir__).relative_path_from(Dir.pwd)
+  links.each do |source, target|
+    cmd = "ln -hs ./#{home_to_links}/#{source} #{target}"
+    puts cmd
+    system cmd
+  end
+end
