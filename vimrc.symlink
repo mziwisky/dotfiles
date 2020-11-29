@@ -21,6 +21,18 @@
 "       and returns cursor to where it started)
 "   [ / ] - beginning / end of last YANK or PASTE
 "   < / > - beginning / end of last VISUAL SELECTION
+"
+"   Using vim-fugitive for resolving merge conflicts:
+"   http://vimcasts.org/episodes/fugitive-vim-resolving-merge-conflicts-with-vimdiff/
+"   tl;dr:
+"     :Gdiff -- open 3-way diff
+"     cursor to the branch you want to choose for your working copy, then :dp
+"       (effectively `:diffput <working-copy-buffer> | diffup[date]`)
+"     ]c -- cursor to next conflict
+"   what if you don't want to just take one or the other?  i guess just edit
+"   the working copy manually and then `:diffup`
+"   when you're done, cursor to working copy and `:Gwrite` -- writes the
+"   current file to the index (e.g. like `git add`)
 
 "dein Scripts-----------------------------
 if &compatible

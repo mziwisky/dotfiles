@@ -2,3 +2,4 @@
 .vim-ignore-dirs
 .byebug_history
 .idea
+.vscode
