@@ -85,6 +85,8 @@ export PATH=~/scripts:$PATH
 
 # Host-specific configs
 case $(hostname -s) in
+  "c02y1135jgh6")
+    ;&
   "mziwisky-l2")
     ;& # this is the syntax for bash case-statement fallthrough
   "mziwisky-l") # formerly "shinestructure"
@@ -146,17 +148,12 @@ export DOCKER_MACHINE_NAME=dinghy
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
-export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
-
-# arc-analytics needs to use java8
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home
-
 # ftl-engine output is unreadable with solarized, so i made a theme. use it
 # when we enter a vaulted shell with SWF_DOMAIN set.
 [ -z "$SWF_DOMAIN" ] || echo -e "\033]50;SetProfile=Default but with readable ftl-engine output\a"
 
-export PATH="/usr/local/opt/scala@2.11/bin:$PATH"
-export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
+# export PATH="/usr/local/opt/scala@2.11/bin:$PATH"
+# export JAVA_HOME=$(/usr/libexec/java_home --version 1.8)
 # export SBT_OPTS="-Xmx2G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=2G -Xss2M"
 
 eval "$( command rapture shell-init )"
