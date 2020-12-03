@@ -5,7 +5,9 @@
 require 'pathname'
 
 specials = {
-  'zshrc.symlink' => '.zshrc.pre-oh-my-zsh'
+  # no longer separating oh-my-zsh config from my own zsh config, but keeping
+  # this here commented out in case i want other specials in the future
+  # 'zshrc.symlink' => '.zshrc.pre-oh-my-zsh'
 }
 
 links = Dir.chdir(__dir__) do
