@@ -27,10 +27,6 @@ bindkey $terminfo[kcud1] history-search-forward
 bindkey "^R" history-incremental-search-backward
 
 export EDITOR=vim
-# doesn't seem like it should be necessary to manually set SHELL, but on a new
-# machine `aws-creds shell` was using bash instead of zsh, so setting this was
-# a quick fix
-export SHELL=$(which zsh)
 
 alias ls='ls -G'
 alias l='ls -Fa'
@@ -56,24 +52,6 @@ function docker-gc()
     [Nn]* ) return;;
   esac
   docker images -f "dangling=true" -q | while read ID; do docker rmi $ID; done;
-}
-
-# "search no svn" - look for an expression in all files
-# under dir (current if unspecified), but skip .svn directories
-function sns()
-{
-  function doit()
-  {
-    grep -r --exclude-dir=.svn --exclude-dir=.git "$2" $1
-  }
-
-  if [ $# = 1 ]; then
-    doit . $1
-  elif [ $# = 2 ]; then
-    doit $1 $2
-  else
-    echo 'usage: sns [dir] expression'
-  fi
 }
 
 function mkcd()
@@ -115,10 +93,6 @@ case $(hostname -s) in
     alias pyserv='python -m SimpleHTTPServer'
     alias asc='java -jar /Applications/Adobe\ Flash\ Builder\ 4.7/sdks/4.9.1AIR3.9/lib/asc.jar'
     alias asc2='java -jar /Applications/Adobe\ Flash\ Builder\ 4.7/eclipse/plugins/com.adobe.flash.compiler_4.7.0.349722/AIRSDK.3.9/lib/compiler.jar'
-    alias canvacurl='curl -H "Authorization: Bearer MnIaYWIotCBXRFhoXTNnFJl46q2qpzr9KdUwgMuLb8hCmMDPCBSC0r9BGoph0CXp"'
-    alias underscor="jq '.'"
-    alias galleryreset='pushd ~/repos/gallery && bx rake assets:clobber && rm -rf node_modules && rm -rf bower_components && npm install && bower install && popd'
-    alias getsmartdbreset='dropdb get_smart_test && createdb get_smart_test && RAILS_ENV=test bin/rails runner "ActiveRecord::Base.connection.execute(\"CREATE SCHEMA hstore; CREATE EXTENSION HSTORE SCHEMA hstore\")" && RAILS_ENV=test bx rake db:migrate'
     alias instdokku='ssh dokku@internal.instructure.com'
     alias rr='rapture refresh'
     alias ra='rapture assume'
