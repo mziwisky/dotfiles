@@ -180,3 +180,8 @@ export PATH=$PATH:$GOPATH/bin
 
 eval "$( command rapture shell-init )"
 export CHOPS_REGIONS=us-east-1,us-west-2,eu-west-1,eu-central-1,ca-central-1,ap-southeast-1,ap-southeast-2
+
+# trying out asdf, the swiss army knife of version managers
+if [ -e /usr/local/opt/asdf/asdf.sh ]; then
+  source /usr/local/opt/asdf/asdf.sh
+fi
