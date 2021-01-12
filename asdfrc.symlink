@@ -1,0 +1,2 @@
+# use files like .ruby-version when available
+legacy_version_file = yes
