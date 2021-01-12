@@ -5,3 +5,11 @@ ZSH_THEME_GIT_PROMPT_PREFIX="(%{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[yellow]%}*%{$fg[blue]%}) "
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%}) "
+
+RPROMPT='$(function {
+  if [[ -n $RAPTURE_ROLE ]]; then
+    echo "($RAPTURE_ROLE)"
+  elif [[ -n $VAULTED_ENV ]]; then
+    echo "(vault:$VAULTED_ENV)"
+  fi
+})'
