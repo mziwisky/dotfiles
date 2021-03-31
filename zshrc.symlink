@@ -31,7 +31,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+# plugins=(git)
 
 # see: https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
 if type brew &>/dev/null; then
@@ -89,10 +89,30 @@ alias grep='grep --color=auto'
 alias ngrok-host='ngrok http -host-header=rewrite'
 alias dc='docker-compose'
 alias dcr='docker-compose run --rm'
+alias gs='git status'
+alias gco='git checkout'
+
+# git cherry-pick to master
+function gcptm() {
+  local branch=$(git branch --show-current)
+  local sha=$(git rev-parse --short HEAD)
+
+  [[ -n $(git status --porcelain) ]] && echo "branch is dirty, clean up before cherry picking" && return 1
+  [[ $branch == 'master' ]] && echo "you're already on master" && return 1
+
+  echo "cherry-picking $branch onto latest master (leaving behind $sha)"
+  echo "=> git fetch origin master" && \
+    git fetch origin master && \
+    echo "=> git checkout origin/master" && \
+    git checkout origin/master && \
+    echo "=> git cherry-pick $branch" && \
+    git cherry-pick $branch && \
+    echo "=> git checkout -B $branch" && \
+    git checkout -B $branch
+}
 
 # purge old docker images (interactively)
-function docker-gc()
-{
+function docker-gc() {
   docker images -f "dangling=true"
   read -k 1 "yn?You cool deleting all those? [y/n] "
   echo ""
@@ -102,8 +122,7 @@ function docker-gc()
   docker images -f "dangling=true" -q | while read ID; do docker rmi $ID; done;
 }
 
-function mkcd()
-{
+function mkcd() {
   mkdir -p $1 && cd $1
 }
 

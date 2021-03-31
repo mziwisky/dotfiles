@@ -53,3 +53,5 @@
   cmd = /usr/bin/opendiff \"$LOCAL\" \"$REMOTE\" -merge \"$MERGED\" | cat
 [push]
   default = simple
+[advice]
+  detachedHead = false
