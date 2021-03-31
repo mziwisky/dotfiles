@@ -127,6 +127,9 @@ function mkcd() {
 }
 
 export PATH=~/scripts:$PATH
+export PATH=~/java/apache-maven-3.6.3/bin:$PATH
+export PATH=~/java/apache-pulsar-2.7.0/bin:$PATH
+export PATH=${PATH}:/usr/local/Cellar/pulsarctl/2.7.0.2/share/plugins
 
 # Host-specific configs
 case $(hostname -s) in
