@@ -131,6 +131,7 @@ export PATH=~/scripts:$PATH
 export PATH=~/java/apache-maven-3.6.3/bin:$PATH
 export PATH=~/java/apache-pulsar-2.7.0/bin:$PATH
 export PATH=${PATH}:/usr/local/Cellar/pulsarctl/2.7.0.2/share/plugins
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # Host-specific configs
 case $(hostname -s) in
@@ -208,3 +209,29 @@ export CHOPS_REGIONS=us-east-1,us-west-2,eu-west-1,eu-central-1,ca-central-1,ap-
 if [ -e /usr/local/opt/asdf/asdf.sh ]; then
   source /usr/local/opt/asdf/asdf.sh
 fi
+
+function k8s-dash() {
+  local REG_ENV="${1:-prod-iad}"
+  [[ "$VAULTED_ENV" != 'insopshub' ]] && echo "need insopshub vaulted shell" && return 1
+  local CONTEXT="$REG_ENV-pulsar-cdc"
+  echo "running: kubectl auth-proxy --context $CONTEXT -n kubernetes-dashboard https://kubernetes-dashboard.svc --address localhost:8000"
+  kubectl auth-proxy --context "$CONTEXT" -n kubernetes-dashboard https://kubernetes-dashboard.svc --address localhost:8000
+}
+
+cdc() {
+  local tmpfile=$(mktemp)
+  CDC_LOGIN_PASSBACK="$tmpfile" command cdc "$@"
+  local exitcode=$?
+	if [ -s "$tmpfile" ]; then
+    export PULSAR_CLIENT_CONF=$(cat "$tmpfile")
+	fi
+	rm -f "$tmpfile"
+  return $exitcode
+}
+
+mb-admin() {
+  local REG_ENV="${1:-prod-iad}"
+  local PS4='=> '
+  set -x
+  export PULSAR_CLIENT_CONF=/Users/mziwisky/.config/mb_util/pulsar/$REG_ENV/canvas-cdc.conf
+}
