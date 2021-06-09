@@ -91,6 +91,7 @@ alias dc='docker-compose'
 alias dcr='docker-compose run --rm'
 alias gs='git status'
 alias gco='git checkout'
+alias gcp='git cherry-pick'
 
 # git cherry-pick to master
 function gcptm() {
@@ -101,14 +102,13 @@ function gcptm() {
   [[ $branch == 'master' ]] && echo "you're already on master" && return 1
 
   echo "cherry-picking $branch onto latest master (leaving behind $sha)"
-  echo "=> git fetch origin master" && \
-    git fetch origin master && \
-    echo "=> git checkout origin/master" && \
-    git checkout origin/master && \
-    echo "=> git cherry-pick $branch" && \
-    git cherry-pick $branch && \
-    echo "=> git checkout -B $branch" && \
-    git checkout -B $branch
+
+  local PS4='=> '
+  set -x
+  git fetch origin master || return $?
+  git checkout origin/master || return $?
+  git cherry-pick $branch || return $?
+  git checkout -B $branch || return $?
 }
 
 # purge old docker images (interactively)
