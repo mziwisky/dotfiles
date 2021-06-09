@@ -63,13 +63,14 @@ unsetopt autopushd
 # also, keep histories separate
 unsetopt sharehistory
 
-#bindkey "^[[A" history-search-backward
-#bindkey "^[[B" history-search-forward
-# something changed, and the above were no longer correct keycodes
-# for the up and down arrow. i think the following will work for
-# any terminal that implements terminfo.
-bindkey $terminfo[kcuu1] history-search-backward
-bindkey $terminfo[kcud1] history-search-forward
+# all this nonsense makes it so that when you type something and then press the
+# up and down arrow keys, you cycle through your history of commands that start
+# with whatever you just typed.
+autoload -U history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey $terminfo[kcuu1] history-beginning-search-backward-end
+bindkey $terminfo[kcud1] history-beginning-search-forward-end
 
 # reverse intelligent search -- super handy!
 bindkey "^R" history-incremental-search-backward
