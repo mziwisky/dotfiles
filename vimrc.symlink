@@ -72,6 +72,7 @@ if dein#load_state('~/.vim/bundles')
   call dein#add('kana/vim-textobj-user') " dependency of vim-textobj-rubyblock
   call dein#add('nelstrom/vim-textobj-rubyblock')
   call dein#add('pangloss/vim-javascript')
+  call dein#add('elzr/vim-json')
   call dein#add('nono/vim-handlebars')
   call dein#add('kchmck/vim-coffee-script')
   call dein#add('mxw/vim-jsx')
