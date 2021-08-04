@@ -64,8 +64,7 @@ if dein#load_state('~/.vim/bundles')
   call dein#add('tpope/vim-endwise') " auto-insert `end` in ruby and other langs
   call dein#add('tpope/vim-surround') " smart edits for things that 'surround' like parens and HTML tags
   call dein#add('tpope/vim-repeat') " allow `.` repeating of vim-surround commands
-  " call dein#add('Valloric/YouCompleteMe') " autocompletion
-  " i want a plugin that uses git to show which lines have been changed
+  call dein#add('neoclide/coc.nvim', { 'rev': 'release' }) " autocompletion/full-on language server support
 
   " Languages
   call dein#add('vim-ruby/vim-ruby')
@@ -73,6 +72,7 @@ if dein#load_state('~/.vim/bundles')
   call dein#add('nelstrom/vim-textobj-rubyblock')
   call dein#add('pangloss/vim-javascript')
   call dein#add('elzr/vim-json')
+  call dein#add('leafgarland/typescript-vim')
   call dein#add('nono/vim-handlebars')
   call dein#add('kchmck/vim-coffee-script')
   call dein#add('mxw/vim-jsx')
@@ -100,6 +100,12 @@ if dein#check_install()
 endif
 
 "End dein Scripts-------------------------
+
+" install CoC extensions
+let g:coc_global_extensions = [ 'coc-prettier', 'coc-json', 'coc-tsserver' ]
+
+" CoC 'code actions' like fixing missing references by importing libs
+nmap <leader>ac <Plug>(coc-codeaction)
 
 " fzf installed via homebrew, loaded here:
 set rtp+=/usr/local/opt/fzf
