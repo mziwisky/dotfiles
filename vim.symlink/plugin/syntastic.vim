@@ -4,7 +4,7 @@
 " let g:syntastic_javascript_eslint_exe = '$(npm bin)/eslint'
 
 let g:syntastic_ruby_checkers = ['mri']
-let g:syntastic_ruby_mri_exec = filereadable($HOME.'/.rbenv/shims/ruby') ? $HOME.'/.rbenv/shims/ruby' : 'ruby'
+let g:syntastic_ruby_mri_exec = filereadable($HOME.'/.asdf/shims/ruby') ? $HOME.'/.asdf/shims/ruby' : 'ruby'
 
 " :middle_finger: python2
  let g:syntastic_python_python_exec = 'python3'

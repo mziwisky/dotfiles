@@ -34,87 +34,86 @@
 "   when you're done, cursor to working copy and `:Gwrite` -- writes the
 "   current file to the index (e.g. like `git add`)
 
-"dein Scripts-----------------------------
-if &compatible
-  set nocompatible               " Be iMproved
+
+" Install vim-plug if not found
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endif
 
-" Required:
-set runtimepath+=~/.vim/bundles/repos/github.com/Shougo/dein.vim
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
 
-" Required:
-if dein#load_state('~/.vim/bundles')
-  call dein#begin('~/.vim/bundles')
+call plug#begin('~/.vim/plugged')
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'tomtom/tcomment_vim' " (un)commenting with gc{motion} (but mapped to <Leader>c{motion} instead)
+Plug 'ntpeters/vim-better-whitespace' " trailing whitespace highlighting, :StripWhitespace to clean file
+Plug 'terryma/vim-expand-region' " v/<C-v> to expand/contract selection
+Plug 'rking/ag.vim' " better grepping! use :Ag
+Plug 'bling/vim-airline' " cool status line
+Plug 'vim-syntastic/syntastic' " syntax checking
+Plug 'tpope/vim-eunuch' " provides :SudoW[rite] (and some other stuff)
+Plug 'tpope/vim-fugitive' " provides :Gblame and friends
+Plug 'yssl/QFEnter' " open quickfix file in previously focused window
+Plug 'tpope/vim-endwise' " auto-insert `end` in ruby and other langs
+Plug 'tpope/vim-surround' " smart edits for things that 'surround' like parens and HTML tags
+Plug 'tpope/vim-repeat' " allow `.` repeating of vim-surround commands
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " autocompletion/full-on language server support
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('~/.vim/bundles/repos/github.com/Shougo/dein.vim')
+" Languages
+Plug 'vim-ruby/vim-ruby'
+Plug 'kana/vim-textobj-user' " dependency of vim-textobj-rubyblock
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'pangloss/vim-javascript'
+Plug 'elzr/vim-json'
+Plug 'leafgarland/typescript-vim'
+Plug 'nono/vim-handlebars'
+Plug 'kchmck/vim-coffee-script'
+Plug 'mxw/vim-jsx'
+Plug 'fatih/vim-go'
+Plug 'elixir-lang/vim-elixir'
+Plug 'hashivim/vim-terraform'
+Plug 'google/vim-jsonnet'
 
-  call dein#add('kien/ctrlp.vim')
-  call dein#add('scrooloose/nerdtree')
-  call dein#add('tomtom/tcomment_vim') " (un)commenting with gc{motion} (but mapped to <Leader>c{motion} instead)
-  call dein#add('ntpeters/vim-better-whitespace') " trailing whitespace highlighting, :StripWhitespace to clean file
-  call dein#add('terryma/vim-expand-region') " v/<C-v> to expand/contract selection
-  call dein#add('rking/ag.vim') " better grepping! use :Ag
-  call dein#add('bling/vim-airline') " cool status line
-  call dein#add('vim-syntastic/syntastic') " syntax checking
-  call dein#add('tpope/vim-eunuch') " provides :SudoW[rite] (and some other stuff)
-  call dein#add('tpope/vim-fugitive') " provides :Gblame and friends
-  call dein#add('yssl/QFEnter') " open quickfix file in previously focused window
-  call dein#add('tpope/vim-endwise') " auto-insert `end` in ruby and other langs
-  call dein#add('tpope/vim-surround') " smart edits for things that 'surround' like parens and HTML tags
-  call dein#add('tpope/vim-repeat') " allow `.` repeating of vim-surround commands
-  call dein#add('neoclide/coc.nvim', { 'rev': 'release' }) " autocompletion/full-on language server support
+Plug 'altercation/vim-colors-solarized'
+Plug 'vim-airline/vim-airline-themes'
+call plug#end()
 
-  " Languages
-  call dein#add('vim-ruby/vim-ruby')
-  call dein#add('kana/vim-textobj-user') " dependency of vim-textobj-rubyblock
-  call dein#add('nelstrom/vim-textobj-rubyblock')
-  call dein#add('pangloss/vim-javascript')
-  call dein#add('elzr/vim-json')
-  call dein#add('leafgarland/typescript-vim')
-  call dein#add('nono/vim-handlebars')
-  call dein#add('kchmck/vim-coffee-script')
-  call dein#add('mxw/vim-jsx')
-  call dein#add('fatih/vim-go')
-  call dein#add('elixir-lang/vim-elixir')
-  call dein#add('hashivim/vim-terraform')
-  call dein#add('google/vim-jsonnet')
+" NOTE: to uninstall a plugin, remove it above, restart vim, and do `:PlugClean`
 
-  call dein#add('altercation/vim-colors-solarized.git')
-  call dein#add('vim-airline/vim-airline-themes')
 
-  " Required:
-  call dein#end()
-  call dein#save_state()
-endif
+" Space Leader!
+let mapleader = "\<Space>"
+let maplocalleader = "\<Space>"
 
-" Required: (this loads indent files, to automatically do
-" language-dependent indenting)
-filetype plugin indent on
-syntax enable
-
-" If you want to install not installed plugins on startup.
-if dein#check_install()
-  call dein#install()
-endif
-
-"End dein Scripts-------------------------
-
-" install CoC extensions
+" CoC config -----------------------------
+" adding an extension to this list will ensure it gets installed.  removing
+" one does not uninstall it. to do that, remove it, then `:CocUninstall <name>`.
+" (and you can tab-complete those names)
+" docs: https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions
 let g:coc_global_extensions = [ 'coc-prettier', 'coc-json', 'coc-tsserver' ]
 
-" CoC 'code actions' like fixing missing references by importing libs
+" autocompletion w/ TAB / Shift-TAB
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" apply 'code actions' (like fixing missing references by importing libs) to the current buffer.
 nmap <leader>ac <Plug>(coc-codeaction)
+" ... to the current line
+nmap <leader>al <Plug>(coc-codeaction-line)
+
+" End CoC config -------------------------
 
 " fzf installed via homebrew, loaded here:
 set rtp+=/usr/local/opt/fzf
 " hack to get it working with MacVim. works, but slow and annoying.
 let g:fzf_launcher = "in_a_new_term_function %s"
-
-" Space Leader!
-let mapleader = "\<Space>"
-let maplocalleader = "\<Space>"
 
 
 " ## Display
@@ -254,9 +253,6 @@ inoremap <C-U> <C-G>u<C-U>
 
 " complete in command mode with tab
 cnoremap <Tab> <C-L><C-D>
-
-" Tab does autocompletion in insert mode
-inoremap <Tab> <C-n>
 
 nnoremap <Leader>n :NERDTreeToggle<CR> :NERDTreeMirror<CR>
 nnoremap <Leader>N :NERDTreeFind<CR> :NERDTreeMirror<CR>
