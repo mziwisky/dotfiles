@@ -48,7 +48,7 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
 
 call plug#begin('~/.vim/plugged')
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdtree'
 Plug 'tomtom/tcomment_vim' " (un)commenting with gc{motion} (but mapped to <Leader>c{motion} instead)
 Plug 'ntpeters/vim-better-whitespace' " trailing whitespace highlighting, :StripWhitespace to clean file
 Plug 'terryma/vim-expand-region' " v/<C-v> to expand/contract selection
@@ -254,8 +254,9 @@ inoremap <C-U> <C-G>u<C-U>
 " complete in command mode with tab
 cnoremap <Tab> <C-L><C-D>
 
-nnoremap <Leader>n :NERDTreeToggle<CR> :NERDTreeMirror<CR>
-nnoremap <Leader>N :NERDTreeFind<CR> :NERDTreeMirror<CR>
+" all the `NERDTreeMirror` stuff makes it so every tab uses the same tree.
+nnoremap <silent> <Leader>n :NERDTreeToggle \| NERDTreeMirror<CR>
+nnoremap <Leader>N :NERDTreeMirror \| NERDTreeFocus \| wincmd p \| NERDTreeFind<CR>
 
 " [b and ]b for prev/next buffer
 nnoremap <silent> [b :bp<CR>
