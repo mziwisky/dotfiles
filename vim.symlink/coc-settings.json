@@ -1,3 +1,4 @@
 {
-  "coc.preferences.formatOnSaveFiletypes": ["css", "ts", "js"]
+  "coc.preferences.formatOnSaveFiletypes": ["css", "ts", "js"],
+  "eslint.autoFixOnSave": true
 }
