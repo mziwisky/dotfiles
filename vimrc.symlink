@@ -111,7 +111,8 @@ nmap <leader>al <Plug>(coc-codeaction-line)
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 " nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
+" don't like overriding `gi` cuz i use that builtin (jump to last insertion point)
+" nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " End CoC config -------------------------
@@ -346,10 +347,10 @@ command Blit ! echo https://gerrit.instructure.com/plugins/gitiles/$(basename `g
 " ...but does normal thing in quickfix window
 "autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 
-" grep for word/WORD under cursor with leader-gg/G
+" grep for word/WORD under cursor with leader-g/G
 " nnoremap <Leader>g :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 " nnoremap <Leader>G :grep! "\b<C-R><C-A>\b"<CR>:cw<CR>
-nnoremap <Leader>gg :Ag! -wQ "<cword>"<CR>
+nnoremap <Leader>g :Ag! -wQ "<cword>"<CR>
 nnoremap <Leader>G :Ag! -wQ "<cWORD>"<CR>
 vnoremap <Leader>g "zy:Ag! -Q "<C-R>z"<CR>
 
