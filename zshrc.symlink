@@ -182,15 +182,6 @@ else
   echo "You should probably get oh-my-zsh, n00b."
 fi
 
-# # grr... canvas' `bx rake js:compile` needs to be able to open a zillion files at once
-# ulimit -n 4096
-
-# dinghy/docker compels me!
-export DOCKER_HOST=tcp://192.168.99.100:2376
-export DOCKER_CERT_PATH=/Users/mziwisky/.docker/machine/machines/dinghy
-export DOCKER_TLS_VERIFY=1
-export DOCKER_MACHINE_NAME=dinghy
-
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
@@ -209,29 +200,3 @@ export CHOPS_REGIONS=us-east-1,us-west-2,eu-west-1,eu-central-1,ca-central-1,ap-
 if [ -e /usr/local/opt/asdf/asdf.sh ]; then
   source /usr/local/opt/asdf/asdf.sh
 fi
-
-function k8s-dash() {
-  local REG_ENV="${1:-prod-iad}"
-  [[ "$VAULTED_ENV" != 'insopshub' ]] && echo "need insopshub vaulted shell" && return 1
-  local CONTEXT="$REG_ENV-pulsar-cdc"
-  echo "running: kubectl auth-proxy --context $CONTEXT -n kubernetes-dashboard https://kubernetes-dashboard.svc --address localhost:8000"
-  kubectl auth-proxy --context "$CONTEXT" -n kubernetes-dashboard https://kubernetes-dashboard.svc --address localhost:8000
-}
-
-cdc() {
-  local tmpfile=$(mktemp)
-  CDC_LOGIN_PASSBACK="$tmpfile" command cdc "$@"
-  local exitcode=$?
-	if [ -s "$tmpfile" ]; then
-    export PULSAR_CLIENT_CONF=$(cat "$tmpfile")
-	fi
-	rm -f "$tmpfile"
-  return $exitcode
-}
-
-mb-admin() {
-  local REG_ENV="${1:-prod-iad}"
-  local PS4='=> '
-  set -x
-  export PULSAR_CLIENT_CONF=/Users/mziwisky/.config/mb_util/pulsar/$REG_ENV/canvas-cdc.conf
-}
