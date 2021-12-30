@@ -103,6 +103,21 @@ inoremap <silent><expr> <TAB>
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
+" 'Return' to insert selected suggestion and apply auto-import if available
+" (in a way that doesn't conflict with vim-endwise).
+" based off suggestion at: https://github.com/tpope/vim-endwise/issues/125
+" except when popup menu is open and nothing is selected, just insert a
+" newline (instead of selecting first option)
+inoremap <silent> <CR> <C-r>=<SID>coc_confirm()<CR>
+function! s:coc_confirm() abort
+  let selected = complete_info()['selected']
+  if pumvisible() && selected != -1
+    return "\<C-y>"
+  else
+    return "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  endif
+endfunction
+
 " apply 'code actions' (like fixing missing references by importing libs) to the current buffer.
 nmap <leader>ac <Plug>(coc-codeaction)
 " ... to the current line
