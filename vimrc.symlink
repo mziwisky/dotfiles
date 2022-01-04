@@ -77,6 +77,7 @@ Plug 'fatih/vim-go'
 Plug 'elixir-lang/vim-elixir'
 Plug 'hashivim/vim-terraform'
 Plug 'google/vim-jsonnet'
+Plug 'pantharshit00/vim-prisma'
 
 Plug 'altercation/vim-colors-solarized'
 Plug 'vim-airline/vim-airline-themes'
@@ -94,7 +95,7 @@ let maplocalleader = "\<Space>"
 " one does not uninstall it. to do that, remove it, then `:CocUninstall <name>`.
 " (and you can tab-complete those names)
 " docs: https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions
-let g:coc_global_extensions = [ 'coc-prettier', 'coc-json', 'coc-tsserver', 'coc-eslint' ]
+let g:coc_global_extensions = [ 'coc-prettier', 'coc-json', 'coc-tsserver', 'coc-eslint', 'coc-prisma' ]
 
 " autocompletion w/ TAB / Shift-TAB
 inoremap <silent><expr> <TAB>
