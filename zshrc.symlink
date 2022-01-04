@@ -194,9 +194,17 @@ export PATH=$PATH:$GOPATH/bin
 # export SBT_OPTS="-Xmx2G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=2G -Xss2M"
 
 eval "$( command rapture shell-init )"
-export CHOPS_REGIONS=us-east-1,us-west-2,eu-west-1,eu-central-1,ca-central-1,ap-southeast-1,ap-southeast-2
 
 # asdf, the swiss army knife of version managers
 if [ -e /usr/local/opt/asdf/asdf.sh ]; then
   source /usr/local/opt/asdf/asdf.sh
 fi
+
+function prof() {
+  if command -v fzf &> /dev/null; then
+    export AWS_PROFILE=$(aws configure list-profiles | fzf +s --tac)
+  else
+    echo 'HINT: install `fzf` for a nicer interface'
+    export AWS_PROFILE=$(select v in `aws configure list-profiles`; do echo $v; break; done)
+  fi
+}
