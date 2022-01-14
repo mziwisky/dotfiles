@@ -30,8 +30,13 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
-# NOTE: zsh-syntax-highlighting needs to be last in the list
-plugins=(zsh-autosuggestions zsh-syntax-highlighting)
+# NOTES:
+# - in general, order matters here
+# - zsh-syntax-highlighting needs to be last in the list
+# - zsh-autosuggestions should probably be second to last, fzf-tab needs to be
+#   before it but after probably everything else (see fzf-tab docs for details)
+# - aws gives me completion for awscli
+plugins=(aws fzf-tab zsh-autosuggestions zsh-syntax-highlighting)
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
