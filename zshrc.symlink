@@ -159,3 +159,17 @@ function prof() {
     export AWS_PROFILE=$(select v in `aws configure list-profiles`; do echo $v; break; done)
   fi
 }
+
+# like `pwd`, but for the topmost finder window. mainly here for `cdf` to use it
+function pfd() {
+  osascript 2>/dev/null <<EOF
+    tell application "Finder"
+      return POSIX path of (insertion location as alias)
+    end tell
+EOF
+}
+
+# change dir to path of topmost finder window
+function cdf() {
+  cd "$(pfd)"
+}
