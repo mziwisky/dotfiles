@@ -29,7 +29,11 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-# plugins=(git)
+
+# NOTE: zsh-syntax-highlighting needs to be last in the list
+plugins=(zsh-autosuggestions zsh-syntax-highlighting)
+
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # see: https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
 if type brew &>/dev/null; then
