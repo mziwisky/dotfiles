@@ -1,4 +1,25 @@
+# because i always forget the difference between .zprofile and .zshrc...
+# interactive login shells source zprofile and zshrc (in that order)
+# interactive non-login shells source zshrc, but not zprofile
+# when you open a new terminal tab, that's an interactive login shell. when you
+# run `zsh` from that shell, that's an interactive non-login shell.
+# (note that there's also zshenv and zlogin -- look em up if you care)
+#
+# things like prepending PATH or exporting other env vars should go in here,
+# cuz those get passed down to non-login shells from the parent shell.  things
+# like defining functions or aliases should go in .zshrc, because those do not
+# get passed down.
+
+export PATH=$HOME/scripts:$HOME/bin:$PATH
+
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
 # Mac-only
 if [ "$(uname)" = "Darwin" ]; then
-  ssh-add -A
+  if ! ssh-add -l &> /dev/null; then
+    ssh-add --apple-load-keychain
+  fi
 fi
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
