@@ -33,12 +33,10 @@ HIST_STAMPS="yyyy-mm-dd"
 # NOTES:
 # - in general, order matters here
 # - zsh-syntax-highlighting needs to be last in the list
-# - zsh-autosuggestions should probably be second to last, fzf-tab needs to be
-#   before it but after probably everything else (see fzf-tab docs for details)
+# - fzf-tab needs to be before it but after probably everything else (see
+#   fzf-tab docs for details)
 # - aws gives me completion for awscli
-plugins=(aws fzf-tab zsh-autosuggestions zsh-syntax-highlighting)
-
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+plugins=(aws fzf-tab zsh-syntax-highlighting)
 
 # see: https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
 if type brew &>/dev/null; then
