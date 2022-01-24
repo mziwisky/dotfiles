@@ -354,7 +354,27 @@ vnoremap <Leader>p "+p
 vnoremap <Leader>P "+P
 
 " share links with coworkers
-command Blit ! echo https://gerrit.instructure.com/plugins/gitiles/$(basename `git rev-parse --show-toplevel`)/+/$(git log -1 --pretty=format:\%H origin/master)/% | pbcopy
+fun! GH(start,end)
+  " construct github URL
+  let l:url = 'https://github.com/LumioHX/'
+  let l:url .= system('basename `git rev-parse --show-toplevel` | tr -d "\n"')
+  let l:url .= '/blob/' . system('git log -1 --pretty=format:\%h origin/main') . '/' . @%
+  " if in visual-line mode, add line number(s)
+  if visualmode() == "V"
+    let l:url .= '#L' . a:start
+    if a:start != a:end
+      let l:url .= '-L' . a:end
+    endif
+  endif
+  echo 'Opening '.l:url
+  " have to assign the return val, even if we're not using it
+  let l:jerb = job_start(['open', l:url])
+  " stick it in the system clipboard, too
+  let @+ = l:url
+endfunction
+" i used to call this Blit for Gitblit, so let's see which of these two ends up sticking
+command -range GH call GH(<line1>, <line2>)
+command -range Blit call GH(<line1>, <line2>)
 
 
 " enter reruns last test...
