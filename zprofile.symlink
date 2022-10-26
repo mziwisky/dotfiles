@@ -15,6 +15,10 @@ export PATH=$HOME/scripts:$HOME/bin:$PATH
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
+# shorten the delay between pressing ESC and entering normal mode. this might
+# cause side-effects, but i doubt it will cause any i care about.
+export KEYTIMEOUT=1
+
 # Mac-only
 if [ "$(uname)" = "Darwin" ]; then
   if ! ssh-add -l &> /dev/null; then
