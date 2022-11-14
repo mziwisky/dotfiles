@@ -356,9 +356,11 @@ vnoremap <Leader>P "+P
 " share links with coworkers
 fun! GH(start,end)
   " construct github URL
+  " assume main branch is named 'main' or 'master'
+  let l:mainBranch = system('git branch -lr | grep -q origin/main && echo main || echo master')
   let l:url = 'https://github.com/LumioHX/'
   let l:url .= system('basename `git rev-parse --show-toplevel` | tr -d "\n"')
-  let l:url .= '/blob/' . system('git log -1 --pretty=format:\%h origin/main') . '/' . @%
+  let l:url .= '/blob/' . system('git log -1 --pretty=format:\%h ' . l:mainBranch) . '/' . @%
   " if in visual-line mode, add line number(s)
   if visualmode() == "V"
     let l:url .= '#L' . a:start
