@@ -104,7 +104,7 @@ alias gcp='git cherry-pick'
 alias gpr='gh pr create --fill'
 alias tf='terraform'
 alias bx='bundle exec'
-alias pyserv='python -m SimpleHTTPServer'
+alias pyserv='python3 -m http.server 8000'
 alias b64='base64'
 
 # git cherry-pick to main
