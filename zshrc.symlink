@@ -109,18 +109,19 @@ alias b64='base64'
 
 # git cherry-pick to main
 function gcptm() {
+  local main_branch=$(git branch -lr | grep -q origin/main && echo main || echo master)
   local branch=$(git branch --show-current)
   local sha=$(git rev-parse --short HEAD)
 
   [[ -n $(git status --porcelain) ]] && echo "branch is dirty, clean up before cherry picking" && return 1
-  [[ $branch == 'main' ]] && echo "you're already on main" && return 1
+  [[ $branch == $main_branch ]] && echo "you're already on $main_branch" && return 1
 
-  echo "cherry-picking $branch onto latest main (leaving behind $sha)"
+  echo "cherry-picking $branch onto latest $main_branch (leaving behind $sha)"
 
   local PS4='=> '
   set -x
-  git fetch origin main || return $?
-  git checkout origin/main || return $?
+  git fetch origin $main_branch || return $?
+  git checkout origin/$main_branch || return $?
   git cherry-pick $branch || return $?
   git checkout -B $branch || return $?
 }
