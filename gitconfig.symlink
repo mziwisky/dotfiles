@@ -4,13 +4,14 @@
 
 [alias]
   s = "status"
+  sh = "show"
   st = "status"
   co = "checkout"
   br = "branch"
-  newtask = "checkout --track origin/master -b"
+  dt = "difftool"
+  showtool = "!showci () { rev=${1:-HEAD}; git difftool $rev~1 $rev | less -R; }; showci $1"
   graph = "log --color --graph --decorate --oneline --branches --remotes --tags HEAD"
   graphme = "log --color --graph --decorate --oneline HEAD"
-  up = "branch -u origin/master"
   gerrit-submit = "!bash -c ' \
     local_ref=$(git symbolic-ref HEAD); \
     local_name=${local_ref##refs/heads/}; \
@@ -39,18 +40,13 @@
   ui = true
 [core]
 	excludesfile = /Users/mziwisky/.gitignore_global
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+	pager = diff-so-fancy | less --tabs=4 -R
 [diff]
-  tool = opendiff
+  tool = difftastic
 [difftool]
   prompt = false
-[difftool "opendiff"]
-  cmd = /usr/bin/opendiff \"$LOCAL\" \"$REMOTE\" -merge \"$MERGED\" | cat
+[difftool "difftastic"]
+  cmd = difft --color=always "$LOCAL" "$REMOTE"
 [push]
   default = simple
 [advice]
@@ -59,3 +55,5 @@
 	defaultBranch = main
 [pull]
   ff = only
+[interactive]
+  diffFilter = diff-so-fancy --patch
