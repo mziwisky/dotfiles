@@ -7,9 +7,7 @@ require 'pathname'
 dry_run = (ARGV & ['--dry', '--dry-run']).size > 0
 
 specials = {
-  # no longer separating oh-my-zsh config from my own zsh config, but keeping
-  # this here commented out in case i want other specials in the future
-  # 'zshrc.symlink' => '.zshrc.pre-oh-my-zsh'
+  'vscode-settings.json' => './Library/Application\ Support/Code/User/settings.json'
 }
 
 links = Dir.chdir(__dir__) do
@@ -24,7 +22,7 @@ Dir.chdir do
   puts "Executing from home dir...#{dry_run ? " (Not really tho -- dry run)" : ""}"
   home_to_links = Pathname.new(__dir__).relative_path_from(Dir.pwd)
   links.each do |source, target|
-    cmd = "ln -hs ./#{home_to_links}/#{source} #{target}"
+    cmd = "ln -fhs $HOME/#{home_to_links}/#{source} #{target}"
     puts cmd
     system cmd unless dry_run
   end

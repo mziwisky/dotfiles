@@ -1,0 +1,21 @@
+{
+  "editor.minimap.enabled": false,
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "workbench.colorCustomizations": {},
+  "workbench.colorTheme": "Visual Studio Dark",
+  "vim.hlsearch": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["\\", "n"],
+      "after": [],
+      "commands": [
+        {
+          "command": ":nohl"
+        }
+      ]
+    }
+  ],
+  "window.zoomLevel": -1
+}
