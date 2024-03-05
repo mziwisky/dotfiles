@@ -6,15 +6,37 @@
   "workbench.colorCustomizations": {},
   "workbench.colorTheme": "Visual Studio Dark",
   "vim.hlsearch": true,
+  "vim.leader": "<space>",
   "vim.normalModeKeyBindingsNonRecursive": [
     {
       "before": ["\\", "n"],
       "after": [],
-      "commands": [
-        {
-          "command": ":nohl"
-        }
-      ]
+      "commands": [ { "command": ":nohl" } ]
+    },
+    {
+      "before": ["<space>", "w"],
+      "after": [],
+      "commands": [ { "command": ":w" } ]
+    },
+    {
+      "before": ["<space>", "q"],
+      "after": [],
+      "commands": [ { "command": ":q" } ]
+    },
+    {
+      "before": ["<space>", "g"],
+      "after": ["v","i","w"],
+      "commands": [ { "command": "workbench.action.findInFiles" } ]
+    },
+    {
+      "before": ["<space>", "G"],
+      "after": ["v","i","W"],
+      "commands": [ { "command": "workbench.action.findInFiles" } ]
+    },
+    {
+      "before": ["<space>", "o"],
+      "after": [],
+      "commands": [ { "command": "workbench.action.quickOpen" } ]
     }
   ],
   "window.zoomLevel": -1
