@@ -37,6 +37,22 @@
       "before": ["<space>", "o"],
       "after": [],
       "commands": [ { "command": "workbench.action.quickOpen" } ]
+    },
+    {
+      "before": ["<C-h>"],
+      "after": ["<C-w>", "<C-h>"]
+    },
+    {
+      "before": ["<C-j>"],
+      "after": ["<C-w>", "<C-j>"]
+    },
+    {
+      "before": ["<C-k>"],
+      "after": ["<C-w>", "<C-k>"]
+    },
+    {
+      "before": ["<C-l>"],
+      "after": ["<C-w>", "<C-l>"]
     }
   ],
   "window.zoomLevel": -1
