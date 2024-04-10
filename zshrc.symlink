@@ -104,6 +104,7 @@ alias gco='git checkout'
 alias gcp='git cherry-pick'
 alias gpr='gh pr create --fill'
 alias tf='terraform'
+alias tg='terragrunt'
 alias bx='bundle exec'
 alias pyserv='python3 -m http.server 8000'
 alias b64='base64'
@@ -170,16 +171,8 @@ function prof() {
   fi
 }
 
-# like `pwd`, but for the topmost finder window. mainly here for `cdf` to use it
-function pfd() {
-  osascript 2>/dev/null <<EOF
-    tell application "Finder"
-      return POSIX path of (insertion location as alias)
-    end tell
-EOF
-}
-
-# change dir to path of topmost finder window
-function cdf() {
-  cd "$(pfd)"
-}
+# i know, env exports should go in .zprofile, but i'm just blindly following the pyenv setup guide right now
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
