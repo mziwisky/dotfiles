@@ -10,17 +10,14 @@
   "vim.normalModeKeyBindingsNonRecursive": [
     {
       "before": ["\\", "n"],
-      "after": [],
       "commands": [ { "command": ":nohl" } ]
     },
     {
       "before": ["<space>", "w"],
-      "after": [],
       "commands": [ { "command": ":w" } ]
     },
     {
       "before": ["<space>", "q"],
-      "after": [],
       "commands": [ { "command": ":q" } ]
     },
     {
@@ -35,8 +32,15 @@
     },
     {
       "before": ["<space>", "o"],
-      "after": [],
       "commands": [ { "command": "workbench.action.quickOpen" } ]
+    },
+    {
+      "before": ["<space>", "n"],
+      "commands": [ { "command": "workbench.explorer.fileView.focus" } ]
+    },
+    {
+      "before": ["<space>", "N"],
+      "commands": [ { "command": "workbench.explorer.fileView.focus" } ]
     },
     {
       "before": ["<C-h>"],
