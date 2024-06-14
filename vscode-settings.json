@@ -4,7 +4,6 @@
     "editor.formatOnType": true
   },
   "workbench.colorCustomizations": {},
-  "workbench.colorTheme": "Visual Studio Dark",
   "vim.hlsearch": true,
   "vim.leader": "<space>",
   "vim.normalModeKeyBindingsNonRecursive": [
