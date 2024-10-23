@@ -31,3 +31,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # this is what Apollo rover wants you to do to set it up. at time of writing,
 # the only thing that file does is prepend $PATH. ok, fine.
 source "$HOME/.rover/env"
+
+# MacPorts:
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+export MANPATH="/opt/local/share/man:$MANPATH"
