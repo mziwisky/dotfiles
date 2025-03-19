@@ -10,6 +10,34 @@
 # like defining functions or aliases should go in .zshrc, because those do not
 # get passed down.
 
+UNAME="$(uname)"
+if [ "$UNAME" = 'Darwin' ]; then
+  # Mac puts a call to /usr/libexec/path_helper in /etc/zprofile. This causes
+  # problems when a login shell is launched from a shell where the PATH is
+  # already set up (e.g. in a VSCode or Cursor terminal). The behavior of
+  # path_helper is described in https://stackoverflow.com/a/48228223/3108885
+  # The problem is it "promotes" the paths it cares about to the front of the
+  # PATH. This seems like a bad idea in general, but one particular thing it
+  # breaks is mise shims -- while many shimming tools just recommend prepending
+  # your PATH manually, mise has you run `mise activate zsh --shims`, which
+  # first checks whether mise's shims are already on the PATH, and if so, it
+  # does nothing more. So if path_helper bumps the shims down in priority,
+  # `mise activate` doesn't move them back up.
+  #
+  # The solution is to just start from scratch, per:
+  # https://github.com/rbenv/rbenv/issues/369#issuecomment-36010083
+  if [ -f /etc/zprofile ]; then
+    PATH=""
+    # iTerm2 adds this utilities dir to the PATH. We don't want to lose that.
+    # Hopefully they don't ever rename it.
+    if [ -d /Applications/iTerm.app/Contents/Resources/utilities ]; then
+      PATH="/Applications/iTerm.app/Contents/Resources/utilities"
+    fi
+    source /etc/zprofile
+  fi
+fi
+
+
 export PATH=$HOME/scripts:$HOME/bin:$PATH
 
 export GOPATH=$HOME/go
@@ -28,10 +56,9 @@ fi
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# this is what Apollo rover wants you to do to set it up. at time of writing,
-# the only thing that file does is prepend $PATH. ok, fine.
-source "$HOME/.rover/env"
-
 # MacPorts:
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 export MANPATH="/opt/local/share/man:$MANPATH"
+
+# mise-en-place -- like asdf but better. --shims mode (means it modifies PATH) so it works with VSCode
+eval "$(mise activate zsh --shims)"

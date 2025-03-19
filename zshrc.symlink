@@ -160,11 +160,6 @@ if command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
 
-# asdf, the swiss army knife of version managers
-if [ -e /opt/homebrew/opt/asdf/libexec/asdf.sh ]; then
-  source /opt/homebrew/opt/asdf/libexec/asdf.sh
-fi
-
 function prof() {
   if command -v fzf &> /dev/null; then
     export AWS_PROFILE=$(aws configure list-profiles | fzf +s --tac)
@@ -174,8 +169,3 @@ function prof() {
   fi
 }
 
-# i know, env exports should go in .zprofile, but i'm just blindly following the pyenv setup guide right now
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
