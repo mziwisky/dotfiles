@@ -4,6 +4,7 @@
     "editor.formatOnType": true
   },
   "workbench.colorCustomizations": {},
+  "vim.textwidth": 100, // how wide to make lines formatted with `gq`. default: 80
   "vim.hlsearch": true,
   "vim.leader": "<space>",
   "vim.normalModeKeyBindingsNonRecursive": [
@@ -58,5 +59,10 @@
       "after": ["<C-w>", "<C-l>"]
     }
   ],
-  "window.zoomLevel": -1
+  "window.zoomLevel": -1,
+  "editor.scrollBeyondLastLine": false,
+  "git.openRepositoryInParentFolders": "always",
+  "github.copilot.enable": {
+    "*": false
+  }
 }
