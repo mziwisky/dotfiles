@@ -35,8 +35,8 @@ HIST_STAMPS="yyyy-mm-dd"
 # - zsh-syntax-highlighting needs to be last in the list
 # - fzf-tab needs to be before it but after probably everything else (see
 #   fzf-tab docs for details)
-# - aws gives me completion for awscli
-plugins=(aws fzf-tab zsh-syntax-highlighting)
+# - aws, gcloud, kubectl each give completion for their CLIs
+plugins=(aws gcloud kubectl fzf-tab zsh-syntax-highlighting)
 
 # see: https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
 if type brew &>/dev/null; then
@@ -88,7 +88,7 @@ alias ll='ls -la'
 alias lll='ls -alotr' # sort by mod time, most recent last
 alias llll='ls -aloSrh' # sort by size, largest last
 alias cp='cp -v -i'
-alias rm='rm -i'
+alias rm='rm -I'
 alias mv='mv -v -i'
 alias vdiff=opendiff
 alias grep='grep --color=auto'
@@ -111,14 +111,34 @@ alias tg='terragrunt'
 alias bx='bundle exec'
 alias pyserv='python3 -m http.server 8000'
 alias b64='base64'
+alias kc='kubectl'
 
 # git cherry-pick to main
 function gcptm() {
+  local force=0
+
+  # Parse flags
+  while [[ "$1" == -* ]]; do
+    case "$1" in
+      -f) force=1 ;;
+      *) echo "Unknown option: $1" >&2; return 1 ;;
+    esac
+    shift
+  done
+
   local main_branch=$(git branch -lr | grep -q origin/main && echo main || echo master)
   local branch=$(git branch --show-current)
   local sha=$(git rev-parse --short HEAD)
 
-  [[ -n $(git status --porcelain) ]] && echo "branch is dirty, clean up before cherry picking" && return 1
+  if [[ -n $(git status --porcelain) ]]; then
+    if [[ $force -eq 0 ]]; then
+      echo "branch is dirty, clean up before cherry picking (or pass -f)"
+      return 1
+    else
+      echo "WARNING: branch is dirty, continuing anyway due to -f"
+    fi
+  fi
+
   [[ $branch == $main_branch ]] && echo "you're already on $main_branch" && return 1
 
   echo "cherry-picking $branch onto latest $main_branch (leaving behind $sha)"
@@ -168,4 +188,3 @@ function prof() {
     export AWS_PROFILE=$(select v in `aws configure list-profiles`; do echo $v; break; done)
   fi
 }
-
