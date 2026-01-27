@@ -60,5 +60,8 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 export MANPATH="/opt/local/share/man:$MANPATH"
 
+# for Poetry
+export PATH="$HOME/.local/bin:$PATH"
+
 # mise-en-place -- like asdf but better. --shims mode (means it modifies PATH) so it works with VSCode
 eval "$(mise activate zsh --shims)"
