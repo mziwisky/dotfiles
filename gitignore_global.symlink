@@ -3,3 +3,5 @@
 .byebug_history
 .idea
 .vscode
+.venv*
+.serena

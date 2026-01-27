@@ -1,6 +1,6 @@
 [user]
   name = Mike Ziwisky
-  email = mike.ziwisky@lumio.com
+  email = mikez@luminarycloud.com
 
 [alias]
   s = "status"
@@ -39,8 +39,9 @@
 [color]
   ui = true
 [core]
-	excludesfile = /Users/mziwisky/.gitignore_global
-	pager = diff-so-fancy | less --tabs=4 -R
+  excludesfile = /Users/mike/.gitignore_global
+  # the following is what makes `git diff` look nice
+  pager = diff-so-fancy | less --tabs=4 -R
 [diff]
   tool = difftastic
 [difftool]
@@ -49,6 +50,8 @@
   cmd = difft --color=always "$LOCAL" "$REMOTE"
 [push]
   default = simple
+  # `git push` with no args acts like `git push -u origin <name_of_local_branch>`
+  autoSetupRemote = true
 [advice]
   detachedHead = false
 [init]
@@ -57,3 +60,8 @@
   ff = only
 [interactive]
   diffFilter = diff-so-fancy --patch
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
