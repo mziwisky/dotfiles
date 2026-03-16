@@ -60,7 +60,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 export MANPATH="/opt/local/share/man:$MANPATH"
 
-# for Poetry
+# for Poetry, also claude i guess
 export PATH="$HOME/.local/bin:$PATH"
 
 # mise-en-place -- like asdf but better. --shims mode (means it modifies PATH) so it works with VSCode
