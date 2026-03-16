@@ -113,7 +113,8 @@ alias pyserv='python3 -m http.server 8000'
 alias b64='base64'
 alias kc='kubectl'
 
-# git cherry-pick to main
+# git cherry-pick to main (it's actually a rebase, but this alias is so
+# ingrained into my muscle memory that i'm keeping the name)
 function gcptm() {
   local force=0
 
@@ -141,14 +142,12 @@ function gcptm() {
 
   [[ $branch == $main_branch ]] && echo "you're already on $main_branch" && return 1
 
-  echo "cherry-picking $branch onto latest $main_branch (leaving behind $sha)"
+  echo "rebasing $branch onto latest $main_branch (leaving behind $sha)"
 
   local PS4='=> '
   set -x
   git fetch origin $main_branch || return $?
-  git checkout origin/$main_branch || return $?
-  git cherry-pick $branch || return $?
-  git checkout -B $branch || return $?
+  git rebase -i origin/$main_branch || return $?
 }
 
 # purge old docker images (interactively)
