@@ -1,0 +1,133 @@
+# most of this is from https://github.com/phinze/nix-config/blob/main/home-manager/phinze/tmux.nix
+# some is from https://github.com/tmux-plugins/tmux-sensible
+# the rest is hobbled together
+
+# reload this config easily
+bind r source-file ~/.tmux.conf \; display "reloaded"
+
+set -g mode-keys vi
+
+# Set the default terminal profile inside tmux (gets us proper colors)
+set -g default-terminal "tmux-256color"
+
+# Unbind the default prefix
+unbind C-b
+
+# Set the new prefix to Ctrl+a
+set -g prefix C-Space
+
+# Ensure you can still send Ctrl+Space to other apps by pressing it twice
+bind C-Space send-prefix
+
+# Increase scrollback buffer size from 2000 to 100000 lines
+set -g history-limit 100000
+
+# Increase tmux messages display duration from 750ms to 4s
+set -g display-time 4000
+
+# Refresh 'status-left' and 'status-right' more often, from every 15s to 5s
+set -g status-interval 5
+
+# Easier and faster switching between next/prev window
+bind C-p previous-window
+bind C-n next-window
+
+# `Ctrl+a a` to toggle windows
+bind a last-window
+
+# mouse scrolling
+set -g mouse on
+
+# Allow programs inside tmux (Neovim specifically) to set clipboard contents
+set -s set-clipboard on
+
+# Make `y` in copy mode yank to system clipboard
+bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
+# Ghostty's terminfo has Tc/setrgbf/setrgbb but tmux doesn't auto-promote
+# those to feature flags; hyperlinks (OSC 8) has no terminfo representation at all.
+set -as terminal-features ",xterm-ghostty:RGB:hyperlinks"
+
+# Focus events allow apps running inside a pane to detect when they gain or lose focus
+set -g focus-events on
+
+# Make Shift+Enter work correctly in e.g. claude code
+set -s extended-keys always
+set -as terminal-features 'xterm*:extkeys'
+
+
+# Copy-mode mouse tweaks:
+# - Single-line wheel steps (tmux defaults to 5)
+# - Auto-exit copy mode when scrolling past the bottom
+# - Mouse select copies without exiting copy mode
+bind-key -T copy-mode-vi WheelUpPane send-keys -X scroll-up
+bind-key -T copy-mode-vi WheelDownPane {
+  send-keys -X scroll-down
+  if-shell -F "#{&&:#{pane_in_mode},#{==:#{scroll_position},0}}" {
+    send-keys -X cancel
+  }
+}
+bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-selection
+
+
+# Fix mouse scrolling in `less`, `git diff`, etc.:
+# If a command is running, send Up/Down arrow keys for scrolling
+bind-key -T root WheelUpPane \
+    if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
+    'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "send-keys -t= Up"'
+
+bind-key -T root WheelDownPane \
+    if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
+    'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "send-keys -t= Down"'
+
+
+# pane navigation, splitting, resizing, etc.
+set -g @plugin 'tmux-plugins/tmux-pain-control'
+
+# I like vim-style splits vs pain-control's pipe-ish mnemonics.
+# bind s split-window -v -c "#{pane_current_path}"
+# bind v split-window -h -c "#{pane_current_path}"
+bind ^s split-window -v -c "#{pane_current_path}"
+bind ^v split-window -h -c "#{pane_current_path}"
+
+
+# better session management (leader+t)
+set -g @plugin '27medkamal/tmux-session-wizard'
+
+set -g @session-wizard 't'
+set -g @session-wizard-mode "full-path"
+
+
+# nice theme and status bar
+set -g @plugin 'catppuccin/tmux#v2.3.0' # See https://github.com/catppuccin/tmux/tags for additional tags
+
+set -g @catppuccin_window_status_style "rounded"
+set -g @catppuccin_window_flags "icon"
+
+set -g status-right-length 100
+set -g status-left-length 100
+set -g status-left ""
+set -g @catppuccin_load_text " #(${loadCommand})"
+set -g status-right "#{E:@catppuccin_status_load}"
+set -ag status-right "#{E:@catppuccin_status_session}"
+set -ag status-right "#{E:@catppuccin_status_host}"
+
+
+# seamless navigation between vim splits and tmux splits with C-{hjkl}
+set -g @plugin 'christoomey/vim-tmux-navigator'
+
+
+# smooth scrolling in copy mode.  not sure yet whether i like it, mainly
+# because it makes mouse scrolling laggy.
+# set -g @plugin 'azorng/tmux-smooth-scroll'
+
+# Scroll line distance
+set -g @smooth-scroll-normal "1"
+# Enable on mouse wheel scroll (but it's la
+set -g @smooth-scroll-mouse "true"
+
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+# see https://github.com/tmux-plugins/tpm
+# NOTE: install new plugins with `prefix I`
+run '~/.tmux/plugins/tpm/tpm'
