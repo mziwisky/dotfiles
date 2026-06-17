@@ -7,7 +7,8 @@ require 'pathname'
 dry_run = (ARGV & ['--dry', '--dry-run']).size > 0
 
 specials = {
-  'vscode-settings.json' => './Library/Application\ Support/Code/User/settings.json'
+  'vscode-settings.json' => './Library/Application\ Support/Code/User/settings.json',
+  'nvim.init.lua' => './.config/nvim/init.lua',
 }
 
 links = Dir.chdir(__dir__) do
@@ -22,6 +23,12 @@ Dir.chdir do
   puts "Executing from home dir...#{dry_run ? " (Not really tho -- dry run)" : ""}"
   home_to_links = Pathname.new(__dir__).relative_path_from(Dir.pwd)
   links.each do |source, target|
+    target_dir = File.dirname(target)
+    unless target_dir == '.'
+      mkdir_cmd = "mkdir -p #{target_dir}"
+      puts mkdir_cmd
+      system mkdir_cmd unless dry_run
+    end
     cmd = "ln -fhs $HOME/#{home_to_links}/#{source} #{target}"
     puts cmd
     system cmd unless dry_run
