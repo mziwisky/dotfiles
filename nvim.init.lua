@@ -20,8 +20,47 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
--- Show line numbers
+-- LSP languages to install
+local mason_languages = {
+  "bashls",
+  "clangd",
+  "gopls",
+  "lua_ls",
+  "protols",
+  "pyright",
+  "rust_analyzer",
+  "terraformls",
+  "yamlls",
+}
+
+
+-- Enable hybrid line numbers by default
 vim.opt.number = true
+vim.opt.relativenumber = true
+
+-- Create an autocommand group for line number toggling
+local numbertoggle = vim.api.nvim_create_augroup("NumberToggle", { clear = true })
+
+-- Switch to absolute numbers when entering insert mode or losing focus
+vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "WinLeave" }, {
+  group = numbertoggle,
+  callback = function()
+    if vim.opt.number:get() then
+      vim.opt.relativenumber = false
+    end
+  end,
+})
+
+-- Switch back to relative numbers when entering normal mode or gaining focus
+vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
+  group = numbertoggle,
+  callback = function()
+    if vim.opt.number:get() and vim.api.nvim_get_mode().mode ~= "i" then
+      vim.opt.relativenumber = true
+    end
+  end,
+})
+
 
 -- When scrolling keep the cursor 5 lines away from the bottom/top
 vim.opt.scrolloff = 5
@@ -53,6 +92,9 @@ vim.opt.listchars = {
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
+-- 0.5s (not 4s) to fire CursorHold autocommands. I used to have one to pop up
+-- code diagnostics, now I have none, but this seems like a good default anyway.
+vim.opt.updatetime = 500
 
 
 local ibl_highlight = {
@@ -77,7 +119,7 @@ require("lazy").setup({
       dependencies = {
         'nvim-lua/plenary.nvim',
         { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-      }
+      },
     },
     -- language syntax highlighting
     {
@@ -86,6 +128,7 @@ require("lazy").setup({
       build = ':TSUpdate'
     },
     -- sticky header shows your "nesting ancestry"
+    -- TODO: doesn't seem to work with python?
     {
       'nvim-treesitter/nvim-treesitter-context',
       opts = { mode = 'topline' }
@@ -181,11 +224,8 @@ require("lazy").setup({
       },
     },
 
-    -- Bunch of LSP stuff (blink copy-paste from chatgpt, make sure it makes sense)
-    {
-      "mason-org/mason.nvim",
-      opts = {},
-    },
+    -- Bunch of LSP stuff (started as blind copy-paste from chatgpt, have been refining...)
+    { "mason-org/mason.nvim", opts = {} },
 
     {
       "mason-org/mason-lspconfig.nvim",
@@ -194,17 +234,7 @@ require("lazy").setup({
         "neovim/nvim-lspconfig",
       },
       opts = {
-        ensure_installed = {
-          "bashls",
-          "clangd",
-          "gopls",
-          "lua_ls",
-          "pyright",
-          "rust_analyzer",
-          "terraformls",
-          "yamlls",
-        },
-        automatic_enable = true;
+        ensure_installed = mason_languages,
       },
     },
 
@@ -214,8 +244,8 @@ require("lazy").setup({
         "mason-org/mason-lspconfig.nvim",
       },
       config = function()
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-
+        -- register "vim" as a known global in all lua files,
+        -- just so all the `vim`s in this file don't get marked as problems
         vim.lsp.config("lua_ls", {
           settings = {
             Lua = {
@@ -240,51 +270,75 @@ require("lazy").setup({
         vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
         vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
         vim.keymap.set("n", "<Leader>e", vim.diagnostic.open_float)
+
+        vim.diagnostic.config({
+          signs = {
+            numhl = {
+              [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+              [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+              [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+              [vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+            },
+            text = {
+              [vim.diagnostic.severity.ERROR] = "X",
+              [vim.diagnostic.severity.HINT] = "?",
+              [vim.diagnostic.severity.INFO] = "I",
+              [vim.diagnostic.severity.WARN] = "!",
+            },
+          },
+          update_in_insert = true,
+          virtual_text = false, -- don't show diagnostics inline...
+          virtual_lines = { current_line = true }, -- ...show them underneath, and only for cursor loc
+        })
       end,
     },
 
-    -- {
-    --   'saghen/blink.cmp',
-    --   dependencies = {
-    --     'saghen/blink.lib',
-    --     -- optional: provides snippets for the snippet source
-    --     'rafamadriz/friendly-snippets',
-    --   },
-    --   build = function()
-    --     -- build the fuzzy matcher, optionally add a timeout to `pwait(timeout_ms)`
-    --     -- you can use `gb` in `:Lazy` to rebuild the plugin as needed
-    --     require('blink.cmp').build():pwait()
-    --   end,
+
+    -- -- some random dude's LSP CONFIG that might have some good tidbits? esp for blink.cmp?
+    -- "neovim/nvim-lspconfig",
+    -- config = function()
+    --   require("mason").setup({
+    --     registries = { "github:crashdummyy/mason-registry", "github:mason-org/mason-registry" },
+    --   })
+    --   require("mason-lspconfig").setup()
+    --   require("roslyn").setup()
+    --   require("blink.cmp").setup({
+    --     completion = {
+    --       documentation = { auto_show = true },
+    --     },
+    --     keymap = {
+    --       preset = "none",
+    --       ["<C-j>"] = { "select_next", "fallback" },
+    --       ["<C-k>"] = { "select_prev", "fallback" },
+    --       ["<CR>"] = { "select_and_accept" },
+    --     },
+    --   })
     --
-    --   ---@module 'blink.cmp'
-    --   ---@type blink.cmp.Config
-    --   opts = {
-    --     -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-    --     -- 'super-tab' for mappings similar to vscode (tab to accept)
-    --     -- 'enter' for enter to accept
-    --     -- 'none' for no mappings
-    --     --
-    --     -- All presets have the following mappings:
-    --     -- C-space: Open menu or open docs if already open
-    --     -- C-n/C-p or Up/Down: Select next/previous item
-    --     -- C-e: Hide menu
-    --     -- C-k: Toggle signature help (if signature.enabled = true)
-    --     --
-    --     -- See :h blink-cmp-config-keymap for defining your own keymap
-    --     keymap = { preset = 'default' },
-    --
-    --     -- (Default) Only show the documentation popup when manually triggered
-    --     completion = { documentation = { auto_show = false } },
-    --
-    --     -- (Default) list of enabled providers defined so that you can extend it
-    --     -- elsewhere in your config, without redefining it, due to `opts_extend`
-    --     sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
-    --
-    --     -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
-    --     -- You may use a lua implementation instead by using `implementation = "lua"`
-    --     -- See the fuzzy documentation for more information
-    --     fuzzy = { implementation = "rust" }
-    --   },
+    --   vim.diagnostic.config({
+    --     signs = {
+    --       numhl = {
+    --         [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+    --         [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+    --         [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+    --         [vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+    --       },
+    --       text = {
+    --         [vim.diagnostic.severity.ERROR] = "X",
+    --         [vim.diagnostic.severity.HINT] = "?",
+    --         [vim.diagnostic.severity.INFO] = "I",
+    --         [vim.diagnostic.severity.WARN] = "!",
+    --       },
+    --     },
+    --     update_in_insert = true,
+    --     virtual_text = false,
+    --     virtual_lines = { current_line = true },
+    --   })
+    -- end,
+    -- dependencies = {
+    --   "seblyng/roslyn.nvim",
+    --   "mason-org/mason-lspconfig.nvim",
+    --   "mason-org/mason.nvim",
+    --   { "saghen/blink.cmp", build = "cargo build --release" },
     -- },
 
   },
@@ -345,20 +399,42 @@ vim.keymap.set({'n','v'}, '<Leader>v', '<cmd>vsp<CR>')
 
 local tele = require('telescope.builtin')
 -- my muscle memory
-vim.keymap.set('n', '<Leader>o', tele.find_files)
+vim.keymap.set('n', '<Leader>o', tele.find_files, { desc = 'Find file' })
+vim.keymap.set('n', '<Leader>m', tele.oldfiles, { desc = 'Find recent file'} )
+vim.keymap.set('n', '<Leader>g', tele.grep_string, { desc = 'Grep word under cursor' })
+vim.keymap.set('v', '<Leader>g', tele.grep_string, { desc = 'Grep current selection' })
 -- telescope's recommendations
 vim.keymap.set('n', '<Leader>ff', tele.find_files, { desc = 'Telescope find files' })
 vim.keymap.set('n', '<Leader>fg', tele.live_grep, { desc = 'Telescope live grep' })
 vim.keymap.set('n', '<Leader>fb', tele.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<Leader>fh', tele.help_tags, { desc = 'Telescope help tags' })
 
+-- more natural preview scrolling
+local tele_actions = require("telescope.actions")
+require("telescope").setup({
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-h>"] = tele_actions.preview_scrolling_left,
+        ["<C-l>"] = tele_actions.preview_scrolling_right,
+      },
+      n = {
+        ["<C-h>"] = tele_actions.preview_scrolling_left,
+        ["<C-l>"] = tele_actions.preview_scrolling_right,
+      },
+    },
+  },
+})
+
 -- more recs
 vim.keymap.set("n", "gr", tele.lsp_references)
 vim.keymap.set("n", "gd", tele.lsp_definitions)
 
+-- git status
+vim.api.nvim_create_user_command("Gs", "Telescope git_status", {})
+
 -- I like <Leader>c for comment/uncomment. `gc` comes from Comment.nvim, so we need `remap=true`
-vim.keymap.set("n", "<Leader>c", "gc", { remap = true })
-vim.keymap.set("v", "<Leader>c", "gc", { remap = true })
+vim.keymap.set({"n", "v"}, "<Leader>c", "gc", { remap = true, desc = "comment/uncomment" })
 
 -- Toggle tree
 vim.keymap.set({"n","v"}, "<Leader>n", "<cmd>Neotree toggle<CR>", { silent = true })
