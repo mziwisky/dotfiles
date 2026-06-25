@@ -14,10 +14,10 @@ set -g default-terminal "tmux-256color"
 unbind C-b
 
 # Set the new prefix to Ctrl+a
-set -g prefix C-Space
+set -g prefix C-a
 
-# Ensure you can still send Ctrl+Space to other apps by pressing it twice
-bind C-Space send-prefix
+# Ensure you can still send Ctrl+a to other apps by pressing it twice
+bind C-a send-prefix
 
 # Increase scrollback buffer size from 2000 to 100000 lines
 set -g history-limit 100000
@@ -70,15 +70,28 @@ bind-key -T copy-mode-vi WheelDownPane {
 bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-selection
 
 
-# Fix mouse scrolling in `less`, `git diff`, etc.:
-# If a command is running, send Up/Down arrow keys for scrolling
-bind-key -T root WheelUpPane \
-    if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
-    'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "send-keys -t= Up"'
+# commenting this out for now because it doesn't work well for TUI-type apps, e.g. claude, k9s
+# # Fix mouse scrolling in `less`, `git diff`, etc.:
+# # If a command is running, send Up/Down arrow keys for scrolling
+# bind-key -T root WheelUpPane \
+#     if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
+#     'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "send-keys -t= Up"'
+#
+# bind-key -T root WheelDownPane \
+#     if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
+#     'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "send-keys -t= Down"'
 
-bind-key -T root WheelDownPane \
-    if-shell -Ft= '#{mouse_any_flag}' 'send-keys -M' \
-    'if-shell -Ft= "#{pane_in_mode}" "send-keys -M" "send-keys -t= Down"'
+
+# enable save/restore of tmux environment (i.e. all sessions/windows/panes)
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+# auto-save every 15 minutes, auto-restore on tmux server start
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+# save pane contents, not just working dir
+set -g @resurrect-capture-pane-contents 'on'
+
+# Note that neovim sessions can be captured, too, but I haven't configured that. See:
+# https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_vim_and_neovim_sessions.md
 
 
 # pane navigation, splitting, resizing, etc.
@@ -95,7 +108,7 @@ bind ^v split-window -h -c "#{pane_current_path}"
 set -g @plugin '27medkamal/tmux-session-wizard'
 
 set -g @session-wizard 't'
-set -g @session-wizard-mode "full-path"
+set -g @session-wizard-mode "short-path"
 
 
 # nice theme and status bar
