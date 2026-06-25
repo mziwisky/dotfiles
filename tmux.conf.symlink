@@ -13,11 +13,11 @@ set -g default-terminal "tmux-256color"
 # Unbind the default prefix
 unbind C-b
 
-# Set the new prefix to Ctrl+a
-set -g prefix C-a
+# Set the new prefix
+set -g prefix C-t
 
-# Ensure you can still send Ctrl+a to other apps by pressing it twice
-bind C-a send-prefix
+# Ensure you can still send Ctrl+t to other apps by pressing it twice
+bind C-t send-prefix
 
 # Increase scrollback buffer size from 2000 to 100000 lines
 set -g history-limit 100000
@@ -89,6 +89,10 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 
 # save pane contents, not just working dir
 set -g @resurrect-capture-pane-contents 'on'
+# clear save key binding to not interfere with my `^s`
+set -g @resurrect-save 'false'
+# clear restore key binding for symmetry
+set -g @resurrect-restore 'false'
 
 # Note that neovim sessions can be captured, too, but I haven't configured that. See:
 # https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_vim_and_neovim_sessions.md
