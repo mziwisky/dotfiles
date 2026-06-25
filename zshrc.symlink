@@ -33,8 +33,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # NOTES:
 # - in general, order matters here
 # - zsh-syntax-highlighting needs to be last in the list
-# - fzf-tab needs to be before it but after probably everything else (see
-#   fzf-tab docs for details)
+# - fzf-tab needs to be before it but after probably everything else (see fzf-tab docs for details)
 # - aws, gcloud, kubectl each give completion for their CLIs
 plugins=(aws gcloud kubectl fzf-tab zsh-syntax-highlighting)
 
@@ -67,6 +66,11 @@ unsetopt autopushd
 
 # also, keep histories separate
 unsetopt sharehistory
+
+# mise normal (non-shim) mode is better for interactive sessions, e.g. it
+# enables `mise shell`. normal activation here cleanly overrides shim mode
+# activation from .zprofile.
+eval "$(mise activate zsh)"
 
 # all this nonsense makes it so that when you type something and then press the
 # up and down arrow keys, you cycle through your history of commands that start
@@ -187,4 +191,21 @@ function prof() {
     echo 'HINT: install `fzf` for a nicer interface'
     export AWS_PROFILE=$(select v in `aws configure list-profiles`; do echo $v; break; done)
   fi
+}
+
+# wt: cd into the new worktree after `worktree add` (the script prints the
+# path on stdout; everything else goes to stderr). Other subcommands pass through.
+wt() {
+  case "$1" in
+    list|ls|remove|rm|-h|--help|"")
+      command worktree "$@"
+      ;;
+    *)
+      # `add <branch>` or the bare-branch shorthand `worktree <branch>`: capture
+      # the printed worktree path and cd into it.
+      local d
+      d="$(command worktree "$@")" || return
+      [ -n "$d" ] && cd "$d"
+      ;;
+  esac
 }

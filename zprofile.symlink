@@ -63,5 +63,10 @@ export MANPATH="/opt/local/share/man:$MANPATH"
 # for Poetry, also claude i guess
 export PATH="$HOME/.local/bin:$PATH"
 
-# mise-en-place -- like asdf but better. --shims mode (means it modifies PATH) so it works with VSCode
+# mise-en-place. --shims mode (means it modifies PATH) so it works in
+# non-interactive sessions, e.g. VSCode, claude's Bash tool, etc.
+# See also .zshrc for non-shim activation
 eval "$(mise activate zsh --shims)"
+
+# gimme `t`
+export PATH=$HOME/.tmux/plugins/tmux-session-wizard/bin:$PATH
