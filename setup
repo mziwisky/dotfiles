@@ -8,7 +8,7 @@ dry_run = (ARGV & ['--dry', '--dry-run']).size > 0
 
 specials = {
   'vscode-settings.json' => './Library/Application\ Support/Code/User/settings.json',
-  'nvim.init.lua' => './.config/nvim/init.lua',
+  'config-nvim' => './.config/nvim',
 }
 
 links = Dir.chdir(__dir__) do
