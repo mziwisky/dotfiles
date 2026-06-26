@@ -343,13 +343,26 @@ require("lazy").setup({
 
   },
   -- Configure any other settings here. See the documentation for more details.
-  -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { "habamax" } },
-  -- automatically check for plugin updates
-  checker = { enabled = true },
+  checker = {
+    enabled = true, -- automatically check for plugin updates
+    notify = false, -- don't do the annoying notification (i have a statusline item)
+    frequency = 259200, -- check once every 3 days
+  },
 })
 
 vim.cmd.colorscheme "catppuccin-mocha"
+
+local function plugin_updates_status()
+  local status = require("lazy.status")
+  local function get_str()
+    return status.updates() .. " Plugin update(s) available! (run :Lazy)"
+  end
+  return {
+    get_str,
+    color = { fg = "#ff9e64" },
+    cond = status.has_updates
+  }
+end
 
 require("lualine").setup({
   options = {
@@ -369,7 +382,12 @@ require("lualine").setup({
         path = 1, -- relative path
       },
     },
-    lualine_x = { "encoding", "fileformat", "filetype" },
+    lualine_x = {
+      plugin_updates_status(),
+      "encoding",
+      "fileformat",
+      "filetype",
+    },
     lualine_y = { "progress" },
     lualine_z = { "location" },
   },
