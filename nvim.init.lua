@@ -427,18 +427,39 @@ vim.keymap.set('n', '<Leader>fg', tele.live_grep, { desc = 'Telescope live grep'
 vim.keymap.set('n', '<Leader>fb', tele.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<Leader>fh', tele.help_tags, { desc = 'Telescope help tags' })
 
--- more natural preview scrolling
-local tele_actions = require("telescope.actions")
+
+local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
+
+-- highlight my search term after i move live-grep results to quickfix
+local send_to_qf_and_highlight = function(prompt_bufnr)
+  -- 1. Get the current text typed into the Telescope prompt
+  local current_picker = action_state.get_current_picker(prompt_bufnr)
+  local text = current_picker:_get_prompt()
+
+  -- 2. Send the text to Neovim's search register and turn on highlighting
+  vim.fn.setreg("/", text)
+  vim.opt.hlsearch = true
+
+  -- 3. Run the default smart send to quickfix action and open it
+  actions.smart_send_to_qflist(prompt_bufnr)
+  actions.open_qflist()
+end
+
 require("telescope").setup({
   defaults = {
     mappings = {
       i = {
-        ["<C-h>"] = tele_actions.preview_scrolling_left,
-        ["<C-l>"] = tele_actions.preview_scrolling_right,
+        ["<C-q>"] = send_to_qf_and_highlight,
+        -- more natural preview scrolling
+        ["<C-h>"] = actions.preview_scrolling_left,
+        ["<C-l>"] = actions.preview_scrolling_right,
       },
       n = {
-        ["<C-h>"] = tele_actions.preview_scrolling_left,
-        ["<C-l>"] = tele_actions.preview_scrolling_right,
+        ["<C-q>"] = send_to_qf_and_highlight,
+        -- more natural preview scrolling
+        ["<C-h>"] = actions.preview_scrolling_left,
+        ["<C-l>"] = actions.preview_scrolling_right,
       },
     },
   },
