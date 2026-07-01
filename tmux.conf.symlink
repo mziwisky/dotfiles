@@ -14,10 +14,10 @@ set -g default-terminal "tmux-256color"
 unbind C-b
 
 # Set the new prefix
-set -g prefix C-t
+set -g prefix C-Space
 
-# Ensure you can still send Ctrl+t to other apps by pressing it twice
-bind C-t send-prefix
+# Ensure you can still send Ctrl+Space to other apps by pressing it twice
+bind C-Space send-prefix
 
 # Increase scrollback buffer size from 2000 to 100000 lines
 set -g history-limit 100000
@@ -32,8 +32,11 @@ set -g status-interval 5
 bind C-p previous-window
 bind C-n next-window
 
-# `Ctrl+a a` to toggle windows
-bind a last-window
+# start windows numbering at 1
+set -g base-index 1
+
+# renumber to 1, 2, 3, ... when a window is killed
+set -g renumber-windows on
 
 # mouse scrolling
 set -g mouse on
@@ -55,6 +58,9 @@ set -g focus-events on
 set -s extended-keys always
 set -as terminal-features 'xterm*:extkeys'
 
+# I accidentally press Shift+Space sometimes, and I want that to just be a normal space,
+# not an extended key sequence
+bind -T root S-Space send-keys ' '
 
 # Copy-mode mouse tweaks:
 # - Single-line wheel steps (tmux defaults to 5)
@@ -120,14 +126,49 @@ set -g @plugin 'catppuccin/tmux#v2.3.0' # See https://github.com/catppuccin/tmux
 
 set -g @catppuccin_window_status_style "rounded"
 set -g @catppuccin_window_flags "icon"
+set -g @catppuccin_window_current_number_color "#{@thm_sapphire}"
 
 set -g status-right-length 100
 set -g status-left-length 100
-set -g status-left ""
-set -g @catppuccin_load_text " #(${loadCommand})"
-set -g status-right "#{E:@catppuccin_status_load}"
-set -ag status-right "#{E:@catppuccin_status_session}"
-set -ag status-right "#{E:@catppuccin_status_host}"
+
+# ─── Mode-aware rounded status pills (catppuccin) ───
+# Requires a Nerd Font for the rounded glyphs (U+E0B6 / U+E0B4)
+#
+# NOTE: source this AFTER catppuccin.tmux so @thm_* vars are available.
+# The bar bg must match @thm_mantle for the caps to blend.
+
+set -gF @mode_normal "#{@thm_lavender}"
+set -gF @mode_prefix "#{@thm_yellow}"
+set -gF @mode_zoom "#{@thm_peach}"
+set -gF @mode_copy "#{@thm_red}"
+set -gF @mode_text "#{@thm_crust}"
+set -gF @bar_bg "#{@thm_mantle}"
+
+# Left cap: mode-fg on bar-bg
+set -g @lcap "\
+#[fg=#{@thm_lavender},bg=#{@thm_mantle}]\
+#{?window_zoomed_flag,#[fg=#{@mode_zoom}],}\
+#{?client_prefix,#[fg=#{@mode_prefix}],}\
+#{?pane_in_mode,#[fg=#{@mode_copy}],}"
+
+# Right cap: mode-fg on bar-bg
+set -g @rcap "\
+#[fg=#{@thm_lavender},bg=#{@thm_mantle}]\
+#{?window_zoomed_flag,#[fg=#{@mode_zoom}],}\
+#{?client_prefix,#[fg=#{@mode_prefix}],}\
+#{?pane_in_mode,#[fg=#{@mode_copy}],}"
+
+# Pill interior: dark text on mode-color bg
+set -g @pill "\
+#[fg=#{@mode_text},bg=#{@mode_normal}]\
+#{?window_zoomed_flag,#[bg=#{@mode_zoom}],}\
+#{?client_prefix,#[bg=#{@mode_prefix}],}\
+#{?pane_in_mode,#[bg=#{@mode_copy}],}"
+
+set -g @label "#{?pane_in_mode,COPY,#{?window_zoomed_flag,ZOOM,#{=12:host_short}}}"
+
+set -g status-left  "#{E:@pill} #{E:@label}#{E:@rcap}#[default] "
+set -g status-right "#{E:@lcap}#{E:@pill}#S "
 
 
 # seamless navigation between vim splits and tmux splits with C-{hjkl}
