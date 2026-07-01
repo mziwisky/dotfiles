@@ -1,4 +1,8 @@
--- TODO: check out the plugins at https://vineeth.io/posts/neovim-setup, see which ones i like
+-- HOT TIPS
+--
+--   Ctrl-O / Ctrl-I -- jump backwards/forwards through the jump list. "jumps" include `:e`, `gd`, `gr`, `*`, `n`, etc.
+--                      so jumps can be within the same buffer, or to a different buffer. Each pane
+--                      has its own jump list.
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -92,9 +96,9 @@ vim.opt.listchars = {
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
--- 0.5s (not 4s) to fire CursorHold autocommands. I used to have one to pop up
--- code diagnostics, now I have none, but this seems like a good default anyway.
-vim.opt.updatetime = 500
+-- 0.25s (not 4s) to fire CursorHold autocommands. I have one to do LSP-aware highlighting of
+-- matching references to the symbol under my cursor.
+vim.opt.updatetime = 250
 
 
 local ibl_highlight = {
@@ -256,12 +260,7 @@ require("lazy").setup({
           },
         })
 
-        -- TODO: these are blind copy-pastes, decide whether i really want them. And note that `gd` is overridden below (not sure which one takes precedence, actually)
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition)
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation)
-
+        -- TODO: these are blind copy-pastes, decide whether i really want them. And note that `gd` is overridden below
         vim.keymap.set("n", "K", vim.lsp.buf.hover)
 
         vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename)
@@ -289,6 +288,58 @@ require("lazy").setup({
           update_in_insert = true,
           virtual_text = false, -- don't show diagnostics inline...
           virtual_lines = { current_line = true }, -- ...show them underneath, and only for cursor loc
+        })
+
+        -- don't show me virtual lines in insert mode...
+        vim.api.nvim_create_autocmd("InsertEnter", {
+          callback = function()
+            vim.diagnostic.config({ virtual_lines = false })
+          end,
+        })
+
+        -- ...do show them to me in normal mode.
+        -- (if even the underlining gets annoying in insert mode, just delete these autocmds
+        -- and set `update_in_insert` to false)
+        vim.api.nvim_create_autocmd("InsertLeave", {
+          callback = function()
+            vim.diagnostic.config({ virtual_lines = { current_line = true } })
+          end,
+        })
+
+        vim.api.nvim_create_autocmd("LspAttach", {
+          group = vim.api.nvim_create_augroup("UserLspAttach", { clear = true }),
+          callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            local bufnr = args.buf
+
+            if client and client.server_capabilities.documentHighlightProvider then
+              local hl_group = vim.api.nvim_create_augroup(
+                "lsp_document_highlight_" .. bufnr,
+                { clear = true }
+              )
+
+              vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                group = hl_group,
+                buffer = bufnr,
+                callback = vim.lsp.buf.document_highlight,
+              })
+
+              vim.api.nvim_create_autocmd("CursorMoved", {
+                group = hl_group,
+                buffer = bufnr,
+                callback = vim.lsp.buf.clear_references,
+              })
+
+              -- clean up the group when the buffer's LSP client detaches
+              vim.api.nvim_create_autocmd("LspDetach", {
+                group = hl_group,
+                buffer = bufnr,
+                callback = function()
+                  vim.api.nvim_clear_autocmds({ group = hl_group, buffer = bufnr })
+                end,
+              })
+            end
+          end,
         })
       end,
     },
@@ -454,12 +505,26 @@ require("telescope").setup({
         -- more natural preview scrolling
         ["<C-h>"] = actions.preview_scrolling_left,
         ["<C-l>"] = actions.preview_scrolling_right,
+        -- results selection
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-k>"] = actions.move_selection_previous,
+        -- open in new splits/tabs
+        ["<C-s>"] = actions.file_split,
+        ["<C-v>"] = actions.file_vsplit,
+        ["<C-t>"] = actions.file_tab,
       },
       n = {
         ["<C-q>"] = send_to_qf_and_highlight,
         -- more natural preview scrolling
         ["<C-h>"] = actions.preview_scrolling_left,
         ["<C-l>"] = actions.preview_scrolling_right,
+        -- results selection
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-k>"] = actions.move_selection_previous,
+        -- open in new splits/tabs
+        ["<C-s>"] = actions.file_split,
+        ["<C-v>"] = actions.file_vsplit,
+        ["<C-t>"] = actions.file_tab,
       },
     },
   },
