@@ -3,7 +3,7 @@
 # the rest is hobbled together
 
 # reload this config easily
-bind r source-file ~/.tmux.conf \; display "reloaded"
+bind-key r source-file ~/.tmux.conf \; display "reloaded"
 
 set -g mode-keys vi
 
@@ -17,7 +17,7 @@ unbind C-b
 set -g prefix C-Space
 
 # Ensure you can still send Ctrl+Space to other apps by pressing it twice
-bind C-Space send-prefix
+bind-key C-Space send-prefix
 
 # Increase scrollback buffer size from 2000 to 100000 lines
 set -g history-limit 100000
@@ -29,8 +29,8 @@ set -g display-time 4000
 set -g status-interval 5
 
 # Easier and faster switching between next/prev window
-bind C-p previous-window
-bind C-n next-window
+bind-key C-p previous-window
+bind-key C-n next-window
 
 # start windows numbering at 1
 set -g base-index 1
@@ -60,7 +60,7 @@ set -as terminal-features 'xterm*:extkeys'
 
 # I accidentally press Shift+Space sometimes, and I want that to just be a normal space,
 # not an extended key sequence
-bind -T root S-Space send-keys ' '
+bind-key -T root S-Space send-keys ' '
 
 # Copy-mode mouse tweaks:
 # - Single-line wheel steps (tmux defaults to 5)
@@ -95,7 +95,7 @@ set -g @plugin 'tmux-plugins/tmux-continuum'
 
 # save pane contents, not just working dir
 set -g @resurrect-capture-pane-contents 'on'
-# clear save key binding to not interfere with my `^s`
+# clear save key binding to not interfere with my `C-s`
 set -g @resurrect-save 'false'
 # clear restore key binding for symmetry
 set -g @resurrect-restore 'false'
@@ -108,11 +108,13 @@ set -g @resurrect-restore 'false'
 set -g @plugin 'tmux-plugins/tmux-pain-control'
 
 # I like vim-style splits vs pain-control's pipe-ish mnemonics.
-# bind s split-window -v -c "#{pane_current_path}"
-# bind v split-window -h -c "#{pane_current_path}"
-bind ^s split-window -v -c "#{pane_current_path}"
-bind ^v split-window -h -c "#{pane_current_path}"
+# bind-key s split-window -v -c "#{pane_current_path}"
+# bind-key v split-window -h -c "#{pane_current_path}"
+bind-key C-s split-window -v -c "#{pane_current_path}"
+bind-key C-v split-window -h -c "#{pane_current_path}"
 
+# i often forget to lift my finger from Ctrl when trying to hit "c"...
+bind-key C-c new-window
 
 # better session management (leader+t)
 set -g @plugin '27medkamal/tmux-session-wizard'
@@ -148,22 +150,22 @@ set -gF @bar_bg "#{@thm_mantle}"
 set -g @lcap "\
 #[fg=#{@thm_lavender},bg=#{@thm_mantle}]\
 #{?window_zoomed_flag,#[fg=#{@mode_zoom}],}\
-#{?client_prefix,#[fg=#{@mode_prefix}],}\
-#{?pane_in_mode,#[fg=#{@mode_copy}],}"
+#{?pane_in_mode,#[fg=#{@mode_copy}],}\
+#{?client_prefix,#[fg=#{@mode_prefix}],}"
 
 # Right cap: mode-fg on bar-bg
 set -g @rcap "\
 #[fg=#{@thm_lavender},bg=#{@thm_mantle}]\
 #{?window_zoomed_flag,#[fg=#{@mode_zoom}],}\
-#{?client_prefix,#[fg=#{@mode_prefix}],}\
-#{?pane_in_mode,#[fg=#{@mode_copy}],}"
+#{?pane_in_mode,#[fg=#{@mode_copy}],}\
+#{?client_prefix,#[fg=#{@mode_prefix}],}"\
 
 # Pill interior: dark text on mode-color bg
 set -g @pill "\
 #[fg=#{@mode_text},bg=#{@mode_normal}]\
 #{?window_zoomed_flag,#[bg=#{@mode_zoom}],}\
-#{?client_prefix,#[bg=#{@mode_prefix}],}\
-#{?pane_in_mode,#[bg=#{@mode_copy}],}"
+#{?pane_in_mode,#[bg=#{@mode_copy}],}\
+#{?client_prefix,#[bg=#{@mode_prefix}],}"
 
 set -g @label "#{?pane_in_mode,COPY,#{?window_zoomed_flag,ZOOM,#{=12:host_short}}}"
 
