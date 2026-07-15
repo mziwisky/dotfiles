@@ -3,6 +3,25 @@
 --   Ctrl-O / Ctrl-I -- jump backwards/forwards through the jump list. "jumps" include `:e`, `gd`, `gr`, `*`, `n`, etc.
 --                      so jumps can be within the same buffer, or to a different buffer. Each pane
 --                      has its own jump list.
+--
+-- CONCEPTS
+--   `g` is a prefix namspace Vim uses to multiply its command space without modifier keys. There's no
+--   unifying concept for everything under `g`, but _some_ of the commands follow some loose themes.
+--   For example, "go":
+--      gg      = go to top of file
+--      gd / gD = go to definition/declaration
+--      gi      = go to last insert position
+--   The other theme is "variant of the base command with the same letter". For example:
+--      gj / gk = move by display (wrapped) lines instead of real ones
+--      gJ      = join lines without inserting a space
+--      gn / gN = select the next/prev search match (operable)
+--   But then there's also just extra stuff that matches neither theme, e.g. g? = Rot13 encode
+--
+--   Other prefix namespaces include:
+--    - z — folds and vertical scroll positioning (zz, zf, zo, za, ...)
+--    - [ / ] — jump backward/forward between pairs of things ([c/]c hunks, [d/]d diagnostics, [m/]m methods)
+--    - Ctrl-w — window management
+--    - " — register selection
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -34,9 +53,9 @@ local mason_languages = {
   "pyright",
   "rust_analyzer",
   "terraformls",
+  "ts_ls",
   "yamlls",
 }
-
 
 -- Enable hybrid line numbers by default
 vim.opt.number = true
@@ -65,6 +84,8 @@ vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnte
   end,
 })
 
+-- 100 columns feels about right most of the time
+vim.opt.textwidth = 100
 
 -- When scrolling keep the cursor 5 lines away from the bottom/top
 vim.opt.scrolloff = 5
@@ -117,7 +138,6 @@ require("lazy").setup({
       opts = { auto_integrations = true },
     },
     -- like CtrlP, but much more?
-    -- TODO: read these docs, want to learn what else it does
     {
       'nvim-telescope/telescope.nvim', version = '*',
       dependencies = {
@@ -167,6 +187,8 @@ require("lazy").setup({
       },
       lazy = false, -- neo-tree will lazily load itself
     },
+    -- interactive rg command constructor
+    { "mangelozzi/nvim-rgflow.lua" },
     -- Shows indentation bars
     {
       "lukas-reineke/indent-blankline.nvim",
@@ -227,7 +249,24 @@ require("lazy").setup({
         },
       },
     },
-
+    -- VSCode-like winbar (breadcrumbs @ top bar of each split)
+    {
+      "utilyre/barbecue.nvim",
+      name = "barbecue",
+      version = "*",
+      dependencies = {
+        "SmiteshP/nvim-navic",
+        "nvim-tree/nvim-web-devicons", -- optional dependency
+      },
+      opts = {
+        show_modified = true,
+        symbols = {
+          modified = "+",
+        },
+      },
+    },
+    -- Nice git diffs
+    { "sindrets/diffview.nvim" },
     -- Bunch of LSP stuff (started as blind copy-paste from chatgpt, have been refining...)
     { "mason-org/mason.nvim", opts = {} },
 
@@ -264,11 +303,14 @@ require("lazy").setup({
         vim.keymap.set("n", "K", vim.lsp.buf.hover)
 
         vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename)
+        -- TODO: this one conflicts with leader-c for "comment/uncomment around". i usually use
+        -- full-line comments, but still not great to have an ambiguous leader-c prefix. maybe i
+        -- should try leader-l for LSP-related things? including the built-in `gr*` commands
+        -- (see `:h grr` for the list)
         vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action)
 
         vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
         vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
-        vim.keymap.set("n", "<Leader>e", vim.diagnostic.open_float)
 
         vim.diagnostic.config({
           signs = {
@@ -343,7 +385,16 @@ require("lazy").setup({
         })
       end,
     },
-
+    -- automatic python virtualenv activation per-buffer, so LSP always has the right context.
+    -- monorepo-compatible!
+    -- TODO: consider https://github.com/linux-cultist/venv-selector.nvim instead? this one here
+    -- seems to work, but that one is more popular, so if this one fails, try that one.
+    {
+      "jglasovic/venv-lsp.nvim",
+      config = function()
+        require("venv-lsp").setup()
+      end,
+    },
 
     -- -- some random dude's LSP CONFIG that might have some good tidbits? esp for blink.cmp?
     -- "neovim/nvim-lspconfig",
@@ -458,6 +509,20 @@ require("lualine").setup({
   },
 })
 
+require('rgflow').setup({
+  -- Set the default rip grep flags and options for when running a search via
+  -- RgFlow. Once changed via the UI, the previous search flags are used for 
+  -- each subsequent search (until Neovim restarts).
+  cmd_flags = "--smart-case --fixed-strings --ignore --max-columns 200",
+
+  -- Mappings to trigger RgFlow functions
+  default_trigger_mappings = true,
+  -- These mappings are only active when the RgFlow UI (panel) is open
+  default_ui_mappings = true,
+  -- QuickFix window only mapping
+  default_quickfix_mappings = true,
+})
+
 -- write, quit
 vim.keymap.set({'n','v'}, '<Leader>w', '<cmd>w<CR>')
 vim.keymap.set({'n','v'}, "<Leader>q", "<cmd>q<CR>")
@@ -466,12 +531,50 @@ vim.keymap.set({'n','v'}, "<Leader>q", "<cmd>q<CR>")
 vim.keymap.set({'n','v'}, "<Leader>s", "<cmd>sp<CR>")
 vim.keymap.set({'n','v'}, '<Leader>v', '<cmd>vsp<CR>')
 
+
+-- Force built-in '*' to be case-sensitive by appending \C
+vim.keymap.set('n', '*', function()
+  local word = vim.fn.expand('<cword>')
+  vim.fn.setreg('/', '\\<' .. word .. '\\>\\C')
+  vim.opt.hlsearch = true
+  -- Move to the next match manually
+  local success, _ = pcall(vim.cmd, 'normal! n')
+  if not success then
+    print("Pattern not found: " .. word)
+  end
+end, { desc = "Case-sensitive word search forward" })
+
+-- Force built-in '#' to be case-sensitive by appending \C
+vim.keymap.set('n', '#', function()
+  local word = vim.fn.expand('<cword>')
+  vim.fn.setreg('/', '\\<' .. word .. '\\>\\C')
+  vim.opt.hlsearch = true
+  -- Move to the previous match manually
+  local success, _ = pcall(vim.cmd, 'normal! N')
+  if not success then
+    print("Pattern not found: " .. word)
+  end
+end, { desc = "Case-sensitive word search backward" })
+
+
 local tele = require('telescope.builtin')
 -- my muscle memory
 vim.keymap.set('n', '<Leader>o', tele.find_files, { desc = 'Find file' })
 vim.keymap.set('n', '<Leader>m', tele.oldfiles, { desc = 'Find recent file'} )
+
 vim.keymap.set('n', '<Leader>g', tele.grep_string, { desc = 'Grep word under cursor' })
+-- -- haven't decided yet if i want Space-g to be case sensitive... if i do, this is how:
+-- vim.keymap.set('n', '<Leader>g', function()
+--   tele.grep_string({additional_args = { '--case-sensitive' } })
+-- end, { desc = 'Grep word under cursor (Case sensitive)' })
+-- -- or, if i want smartcase, this is how:
+-- local tele = require('telescope.builtin')
+-- vim.keymap.set('n', '<Leader>g', function()
+--   tele.grep_string({ case_mode = "respect_ignorecase" })
+-- end, { desc = 'Grep word under cursor (Smartcase)' })
+
 vim.keymap.set('v', '<Leader>g', tele.grep_string, { desc = 'Grep current selection' })
+
 -- telescope's recommendations
 vim.keymap.set('n', '<Leader>ff', tele.find_files, { desc = 'Telescope find files' })
 vim.keymap.set('n', '<Leader>fg', tele.live_grep, { desc = 'Telescope live grep' })
@@ -533,10 +636,13 @@ require("telescope").setup({
 -- more recs
 vim.keymap.set("n", "gr", tele.lsp_references)
 vim.keymap.set("n", "gd", tele.lsp_definitions)
+vim.keymap.set("n", "gI", tele.lsp_implementations)
 
 -- git status
 vim.api.nvim_create_user_command("Gs", "Telescope git_status", {})
--- git diff
+-- even better git status?
+-- vim.api.nvim_create_user_command("Gs", "DiffviewOpen", {})
+-- git diff (current file)
 vim.api.nvim_create_user_command("Gd", "Gitsigns diffthis", {})
 
 -- I like <Leader>c for comment/uncomment. `gc` comes from Comment.nvim, so we need `remap=true`
