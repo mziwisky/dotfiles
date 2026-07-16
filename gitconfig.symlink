@@ -42,6 +42,7 @@
   excludesfile = /Users/mike/.gitignore_global
   # the following is what makes `git diff` look nice
   pager = diff-so-fancy | less --tabs=4 -R
+	untrackedCache = true
 [diff]
   tool = difftastic
 [difftool]
