@@ -100,11 +100,5 @@ return {
   -- monorepo-compatible!
   -- TODO: consider https://github.com/linux-cultist/venv-selector.nvim instead? this one here
   -- seems to work, but that one is more popular, so if this one fails, try that one.
-  {
-    "jglasovic/venv-lsp.nvim",
-    config = function()
-      require("venv-lsp").setup()
-    end,
-  },
-
+  { "jglasovic/venv-lsp.nvim" },
 }
