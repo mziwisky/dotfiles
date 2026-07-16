@@ -307,6 +307,9 @@ vim.keymap.set({"n", "v"}, "<Leader>c", "gc", { remap = true, desc = "comment/un
 vim.keymap.set({"n","v"}, "<Leader>n", "<cmd>Neotree toggle<CR>", { silent = true })
 vim.keymap.set({"n","v"}, "<Leader>N", "<cmd>Neotree reveal<CR>", { silent = true })
 
+-- Aerial is sweet
+vim.keymap.set({"n","v"}, "<Leader>a", "<cmd>AerialToggle<CR>", { silent = true })
+
 -- Make Y work like D, C, etc
 vim.keymap.set('n', 'Y', 'y$')
 
