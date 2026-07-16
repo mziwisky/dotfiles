@@ -11,14 +11,6 @@ return {
     priority = 1000,
     opts = { auto_integrations = true },
   },
-  -- like CtrlP, but much more?
-  {
-    'nvim-telescope/telescope.nvim', version = '*',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-    },
-  },
   -- seamless navigation between vim and tmux panes
   {
     "christoomey/vim-tmux-navigator",
