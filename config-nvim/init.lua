@@ -23,5 +23,12 @@
 --    - Ctrl-w — window management
 --    - " — register selection
 
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+require('config.opts')
 require("config.lazy")
+vim.cmd.colorscheme "catppuccin-mocha"
+require("config.commands")
+require("config.keymaps")
 require("config.ftplugin")

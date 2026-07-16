@@ -4,13 +4,6 @@ local ibl_highlight = {
   "Whitespace",
 }
 return {
-  -- cool theme
-  {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
-    opts = { auto_integrations = true },
-  },
   -- seamless navigation between vim and tmux panes
   {
     "christoomey/vim-tmux-navigator",
@@ -30,8 +23,6 @@ return {
       { "<c-\\>", "<cmd>TmuxNavigatePrevious<cr>" },
     },
   },
-  -- interactive rg command constructor
-  { "mangelozzi/nvim-rgflow.lua" },
   -- Shows indentation bars
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -55,11 +46,6 @@ return {
   {
     'lewis6991/gitsigns.nvim',
     opts = { current_line_blame = true },
-  },
-  -- a statusline
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
   -- like tpope/vim-surround
   {
