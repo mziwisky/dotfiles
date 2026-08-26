@@ -3,10 +3,34 @@ vim.keymap.set({'n','v'}, '<Leader>w', '<cmd>w<CR>')
 vim.keymap.set({'n','v'}, "<Leader>q", "<cmd>q<CR>")
 
 -- better movement
-vim.keymap.set('n', 'j', [[(v:count > 1 ? 'm`' . v:count : v:count == 0 ? 'g' : '') . 'j']], { expr = true, desc = 'down' })
-vim.keymap.set('n', 'k', [[(v:count > 1 ? 'm`' . v:count : v:count == 0 ? 'g' : '') . 'k']], { expr = true, desc = 'up' })
-vim.keymap.set('x', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = 'down' })
-vim.keymap.set('x', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = 'up' })
+local function line_move(key)
+  return function()
+    local count = vim.v.count
+    local cmd
+    if count > 1 then
+      -- set the unnamed mark so the next `` or '' (double backtick or apostrophe) jumps back to where we came from
+      cmd = 'm`' .. count .. key
+    elseif count == 0 then
+      cmd = 'g' .. key
+    else
+      cmd = count .. key
+    end
+    vim.cmd('normal! ' .. cmd)
+  end
+end
+
+local function visual_line_move(key)
+  return function()
+    local count = vim.v.count
+    vim.cmd('normal! ' .. (count == 0 and ('g' .. key) or (count .. key)))
+  end
+end
+
+vim.keymap.set('n', 'j', line_move('j'), { desc = 'down' })
+vim.keymap.set('n', 'k', line_move('k'), { desc = 'up' })
+vim.keymap.set('x', 'j', visual_line_move('j'), { desc = 'down' })
+vim.keymap.set('x', 'k', visual_line_move('k'), { desc = 'up' })
+
 
 -- quick splits
 vim.keymap.set({'n','v'}, "<Leader>s", "<cmd>sp<CR>")
