@@ -1,5 +1,35 @@
 -- It's a statusline!
 
+-- Which python env is active, for python buffers. venv-selector's own "venv-selector"
+-- component shows the venv dir's own name, which is ".venv" for every project in a
+-- monorepo -- so show the project directory holding it instead.
+--
+-- This is opinionated, expecting a local `.venv` for each project root, so if it doesn't find one
+-- it appends a "(not <this project>)" warning to the message. Might prove to be noisy outside of my
+-- day job. We'll see.
+local function python_venv_status()
+  local function get_str()
+    local venv = require("venv-selector").venv()
+    if not venv or venv == "" then
+      return "󰈺 no venv"
+    end
+    local project = vim.fn.fnamemodify(venv, ":h:t")
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+      local root = client.config.root_dir
+      if root and root ~= vim.fn.fnamemodify(venv, ":h") then
+        return "󰈺 " .. project .. " (not " .. vim.fn.fnamemodify(root, ":t") .. ")"
+      end
+    end
+    return "󰈺 " .. project
+  end
+  return {
+    get_str,
+    cond = function()
+      return vim.bo.filetype == "python"
+    end,
+  }
+end
+
 local function plugin_updates_status()
   local status = require("lazy.status")
   local function get_str()
@@ -35,6 +65,7 @@ return {
       },
       lualine_x = {
         plugin_updates_status(),
+        python_venv_status(),
         "encoding",
         "fileformat",
         "filetype",

@@ -98,7 +98,42 @@ return {
   { "sindrets/diffview.nvim" },
   -- automatic python virtualenv activation per-buffer, so LSP always has the right context.
   -- monorepo-compatible!
-  -- TODO: consider https://github.com/linux-cultist/venv-selector.nvim instead? this one here
-  -- seems to work, but that one is more popular, so if this one fails, try that one.
-  { "jglasovic/venv-lsp.nvim" },
+  {
+    "linux-cultist/venv-selector.nvim",
+    dependencies = {
+      { "nvim-telescope/telescope.nvim", version = "*", dependencies = { "nvim-lua/plenary.nvim" } }, -- optional: you can also use fzf-lua, snacks, mini-pick instead.
+    },
+    ft = "python", -- Load when opening Python files
+    keys = { { ",v", "<cmd>VenvSelect<cr>" } }, -- Open picker on keymap
+    opts = {
+      options = {}, -- plugin-wide options
+      search = {}   -- custom search definitions
+    },
+    config = function(_, opts)
+      local venv_selector = require("venv-selector")
+      venv_selector.setup(opts)
+
+      -- venv-selector only *remembers* venvs picked with `,v`, keyed by absolute LSP root
+      -- path -- so every new worktree starts from scratch. Our projects all keep their venv
+      -- at <lsp root>/.venv, so just take it. `,v` still overrides for anything that
+      -- doesn't follow the convention.
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("VenvFromLspRoot", { clear = true }),
+        callback = function(args)
+          if vim.bo[args.buf].filetype ~= "python" then return end
+          -- activate_from_path() acts on the current buffer, so don't fire for background ones.
+          if args.buf ~= vim.api.nvim_get_current_buf() then return end
+
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          local root = client and client.config.root_dir
+          if not root then return end
+
+          local python = root .. "/.venv/bin/python"
+          if vim.uv.fs_stat(python) and venv_selector.python() ~= python then
+            venv_selector.activate_from_path(python, "venv")
+          end
+        end,
+      })
+    end,
+  }
 }

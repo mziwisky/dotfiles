@@ -58,6 +58,10 @@ return {
       vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
       vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
+      -- i like virtual lines, but they can get clipped, so i need a way to see the full diagnostics
+      -- in that case.  i'll use `gl` for it, we'll see if i remember that.
+      vim.keymap.set("n", "gl", vim.diagnostic.open_float)
+
       vim.diagnostic.config({
         signs = {
           numhl = {
