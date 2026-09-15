@@ -91,9 +91,6 @@ alias l='ls -Fa'
 alias ll='ls -la'
 alias lll='ls -alotr' # sort by mod time, most recent last
 alias llll='ls -aloSrh' # sort by size, largest last
-alias cp='cp -v -i'
-alias rm='rm -I'
-alias mv='mv -v -i'
 alias vdiff=opendiff
 alias grep='grep --color=auto'
 alias ngrok-host='ngrok http -host-header=rewrite'
