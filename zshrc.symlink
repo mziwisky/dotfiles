@@ -206,3 +206,18 @@ wt() {
       ;;
   esac
 }
+
+wtt() {
+  case "$1" in
+    list|ls|remove|rm|-h|--help|"")
+      command worktree "$@"
+      ;;
+    *)
+      # `add <branch>` or the bare-branch shorthand `worktree <branch>`: capture
+      # the printed worktree path and cd into it.
+      local d
+      d="$(command worktree "$@")" || return
+      [ -n "$d" ] && t "$d"
+      ;;
+  esac
+}
